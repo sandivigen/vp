@@ -30,7 +30,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <?php
-                                    // amount of comments
+                                    // amount of articles
                                     $count_articles = 0;
                                     foreach($articles as $article) {
                                         if($user->id == $article->user_id)

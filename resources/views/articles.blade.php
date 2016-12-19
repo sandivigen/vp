@@ -40,9 +40,6 @@
 
         <div class="col-md-9">
 
-
-
-
             @if($articles)
                 @foreach($articles as $article)
 
