@@ -101,10 +101,10 @@
                                         {!! Form::label('title', 'Заголовок') !!}
                                         {!! Form::text('title', $value = $article->title, $attributes = ['class' => 'form-control top-style', 'name' => 'title']) !!}
                                     </div>
-                                    {{--<div class="form-group">--}}
-                                    {{--{!! Form::label('category', 'Категория') !!}--}}
-                                    {{--{!! Form::select('category', $value = array('Workshop' => 'Workshop', 'Biking' => 'Biking', 'Other' => 'Other'), $article->category, $attributes = ['class' => 'form-control', 'name' => 'category']) !!}<br>--}}
-                                    {{--</div>--}}
+                                    <div class="form-group">
+                                    {!! Form::label('category', 'Категория') !!}
+                                    {!! Form::select('category', $value = array('Workshop' => 'Workshop', 'Biking' => 'Biking', 'Other' => 'Other'), $article->category, $attributes = ['class' => 'form-control', 'name' => 'category']) !!}<br>
+                                    </div>
                                     {{--<div class="form-group">--}}
                                     {{--{!! Form::label('js-switch', 'Добавить видео к статье') !!}--}}
                                     {{--<input type="checkbox" class="js-switch" checked />--}}
