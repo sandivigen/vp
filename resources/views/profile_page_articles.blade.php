@@ -75,7 +75,11 @@
                                                                         @endif
                                                                         <span class="media-meta pull-right">{{ $article->category }}</span>
                                                                     </h4>
-                                                                    <p class="summary">{{ str_limit($article->text, $limit = 300, '...') }} <a href="/articles/{{ $article->id }}">read more</a></p>
+                                                                    <?php
+                                                                        // remove text formatting tags
+                                                                        $article_text =  strip_tags($article->text);
+                                                                    ?>
+                                                                    <p class="summary">{{ str_limit($article_text, $limit = 300, '...') }} <a href="/articles/{{ $article->id }}">read more</a></p>
                                                                 </div>
                                                             </div>
                                                         </td>
