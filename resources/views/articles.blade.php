@@ -9,18 +9,20 @@
         $user[$value->id] = $value->name;
     }
 
-    // Get comments count list
-    $comment_count = array();
+    // amount of comments for the article metadata
+    $comment_count = array(); // amount of comments
     foreach($comments as $key=>$value){
-        if (!isset($comment_count[$value->category_item_id])){
-            $comment_count[$value->category_item_id] = 1;
-        } else {
-            $comment_count[$value->category_item_id] += 1;
+        if ($value->publish == 1) { // если сообщение не опубликованно, то не будем его указывать в сумме
+            if (!isset($comment_count[$value->category_item_id])){ // если не создан элемент массива, то создаем
+                $comment_count[$value->category_item_id] = 1;
+            } else {
+                $comment_count[$value->category_item_id] += 1;
+            }
         }
     }
 ?>
 
-{{ Debugbar::info($articles) }}
+{{ Debugbar::info($comments) }}
 
 
 
@@ -81,22 +83,17 @@
                                 ?>
                                 <a href="/articles/{{ $article->id }}/#article-comment-block" class="meta_comments f-left shape new-angle button-comment">{{$comment_count[$article->id] }} <i class="glyphicon glyphicon-comment"></i></a>
                                 <a href="#" class="jm-post-like f-left shape new-angle button-like" data-post_id="1178" title="Like">0 <i id="icon-unlike" class="fa fa-heart"></i></a>
+                                <a class="f-right more_btn shape new-angle button-read-more" href="/articles/{{ $article->id }}">Читать далее</a>
+                                @if(!Auth::guest())
+                                    @if(Auth::user()->id == $article->user_id)
+                                        <a class="f-right more_btn shape new-angle button-edit" href="/articles/{{ $article->id }}/edit?red=list"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
 
-
-
-
-
-                                    <a class="f-right more_btn shape new-angle button-read-more" href="/articles/{{ $article->id }}">Читать далее</a>
-                                    @if(!Auth::guest())
-                                        @if(Auth::user()->id == $article->user_id)
-                                            <a class="f-right more_btn shape new-angle button-edit" href="/articles/{{ $article->id }}/edit?red=list"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id]]) !!}
+                                        {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id]]) !!}
 {{--                                                                                        {{ Form::button('<i class="fa fa-trash" aria-hidden="true"></i>', ['class' => 'btn', 'role' => 'button', 'type' => 'submit']) }}--}}
-                                            {!! Form::close() !!}
+                                        {!! Form::close() !!}
 
-                                        @endif
                                     @endif
+                                @endif
                             </div>
                         </article>
                         {{--</div>--}}
