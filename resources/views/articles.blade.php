@@ -68,7 +68,11 @@
                                 </div>
                             </div>
                             <div class="entry-content">
-                                <p>{!! str_limit($article->text, $limit = 240, $end = '...') !!}</p>
+                                <?php
+                                    // remove text formatting tags
+                                    $article_text =  strip_tags($article->text);
+                                ?>
+                                <p>{!! str_limit($article_text, $limit = 240, $end = '...') !!}</p>
                             </div>
                             <div class="bottom_tools">
                                 <?php
