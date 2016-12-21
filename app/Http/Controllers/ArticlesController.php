@@ -247,7 +247,7 @@ class ArticlesController extends Controller
 //            $user = User::find($article->user_id);
 //            $user_name = $user->name;
 //            return Redirect::action('UserController@profilePage', $user_name);
-            return Redirect::action('UserController@profilePage', Auth::user()->name);
+            return Redirect::action('UserController@profilePageArticles', Auth::user()->name);
         } else {
             return redirect()->route('articles.show', $id)
                 ->with('message', 'Article update');

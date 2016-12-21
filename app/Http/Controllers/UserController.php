@@ -34,6 +34,8 @@ class UserController extends Controller
         }
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
+
+    // Страница содержащая список статей данного пользователя
     public function profilePageArticles($user_name) {
 
         $users = User::all();
@@ -44,9 +46,9 @@ class UserController extends Controller
                 $user_id = $user->id;
         }
 
+//        print_r($articles);
+
         $articles = Articles::where('user_id', '=', $user_id)->paginate(3);
-
-
 
         // Check if the user exists(существует)
         $user_exists = 0;
@@ -65,6 +67,7 @@ class UserController extends Controller
             $user = User::find($user_id);
 
             $heading = 'Профиль пользователя: ' . $user_name;
+
 
             return view('profile_page_articles', array(
                 'heading' => $heading,
