@@ -93,7 +93,7 @@
 
                                     <div class="form-group">
                                         {!! Form::label('thumbnail', 'Миниатюра') !!}
-                                        {!! Form::file('thumbnail', $attributes = ['class' => 'btn btn-default', 'name' => 'thumbnail', 'id'=>'avatar-1']) !!}
+                                        {!! Form::file('thumbnail', $attributes = ['class' => 'btn btn-default', 'name' => 'thumbnail', 'id'=>'thumbnail-article']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-9">
@@ -195,7 +195,7 @@
     <!-- the fileinput plugin initialization -->
     <script>
 
-        $("#avatar-1").fileinput({
+        $("#thumbnail-article").fileinput({
             overwriteInitial: true,
             maxFileSize: 1500,
             showClose: false,
