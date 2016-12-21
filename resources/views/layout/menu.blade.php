@@ -87,7 +87,7 @@
                                         <span class="username">Hi, {{ Auth::user()->name }}</span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-animate drop-menu-right">
-                                        <li><a href="#"><i class="fa fa-file-text"></i>Статью</a></li>
+                                        <li><a href="/articles/create"><i class="fa fa-file-text"></i>Статью</a></li>
                                         <li><a href="#"><i class="fa fa-star"></i>Аксессуар</a></li>
                                         <li><a href="{{ url('/user', Auth::user()->name) }}/comments"><i class="icon-user"></i><span>Comments list</span></a></li>
                                         <li><a href="{{ url('/user', Auth::user()->name) }}/articles"><i class="icon-user"></i><span>Articles list</span></a></li>
