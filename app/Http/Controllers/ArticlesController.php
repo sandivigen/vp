@@ -134,7 +134,7 @@ class ArticlesController extends Controller
         $this->dispatch($command);
 
         return \Redirect::route('articles.index')
-            ->with('message', 'Article added');
+            ->with('message', 'Статья успешно добалена');
     }
 
     /**
@@ -176,8 +176,7 @@ class ArticlesController extends Controller
         return view('edit_article', compact('article', 'heading', 'redirect'));
     }
 
-
-
+    
     /**
      * Update the specified resource in storage.
      *
