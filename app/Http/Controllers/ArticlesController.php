@@ -114,13 +114,13 @@ class ArticlesController extends Controller
 
             $img = Image::make($path_thumbnail_original_file);
 
-            $width = 200;
-            $height = 200;
+            $width = 500;
+            $height = 500;
             $img->width() > $img->height() ? $width=null : $height=null;
             $img->resize($width, $height, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            $img->fit(200);
+            $img->fit(500);
             $img->save($path_thumbnail_resize_file);
 
 //        } else {
@@ -220,13 +220,13 @@ class ArticlesController extends Controller
 
             $img = Image::make($path_thumbnail_original_file);
 
-            $width = 200;
-            $height = 200;
+            $width = 500;
+            $height = 500;
             $img->width() > $img->height() ? $width=null : $height=null;
             $img->resize($width, $height, function ($constraint) {
                 $constraint->aspectRatio();
             });
-            $img->fit(200);
+            $img->fit(500);
             $img->save($path_thumbnail_resize_file);
 
         } else {
