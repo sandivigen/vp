@@ -33,7 +33,7 @@ Route::get('profile', 'UserController@profile');
 Route::post('profile', 'UserController@update_avatar');
 Route::get('user/{user_name}/comments', 'UserController@profilePageComments');
 Route::get('user/{user_name}/articles', 'UserController@profilePageArticles');
-Route::get('user/{user_name}/info', 'UserController@profilePage');
+Route::get('user/{user_name}', 'UserController@profilePage');
 
 
 //Route::get('/contact', function () {
