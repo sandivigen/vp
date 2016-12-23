@@ -60,7 +60,7 @@
                                     </div>
                                     <div class="form-group">
                                     {!! Form::label('category', 'Категория') !!}
-                                    {!! Form::select('category', $value = array('Workshop' => 'Workshop', 'Biking' => 'Biking', 'Other' => 'Other'), $article->category, $attributes = ['class' => 'form-control', 'name' => 'category']) !!}<br>
+                                    {!! Form::select('category', $value = array('News' => 'Новости', 'None' => 'Нет категории'), $article->category, $attributes = ['class' => 'form-control', 'name' => 'category']) !!}<br>
                                     </div>
                                     {{--<div class="form-group">--}}
                                     {{--{!! Form::label('js-switch', 'Добавить видео к статье') !!}--}}

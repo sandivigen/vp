@@ -22,7 +22,7 @@
     }
 ?>
 
-{{--{{ Debugbar::info($comments) }}--}}
+{{ Debugbar::info($articles) }}
 
 @section('content')
 
@@ -36,6 +36,7 @@
         <div class="col-md-9">
             @if($articles)
                 @foreach($articles as $article)
+
 
                     <div class="row blog-posts small post-item">
                         {{--<div class="col-sm-4 padding-none">--}}
@@ -55,14 +56,16 @@
                                     <ul class="post-meta">
                                         <li class="meta-user"><i class="fa fa-user"></i><a href="/user/{{ $user[$article->user_id] }}">{{ $user[$article->user_id] }}</a></li>
                                         <li class="meta-date"><i class="fa fa-clock-o"></i>{{ $article->created_at->format('Y-m-d') }}</li>
-                                        <li></li>
-                                        <li class="meta-cat"><i class="fa fa-folder-open"></i><a href="/articles/category/{{ $article->category }}" rel="category tag">{{ $article->category }}</a></li>
+                                        @php
+                                            $category_rus = ($article->category == 'News' ? 'Новости' : 'Без категории');
+                                        @endphp
+                                        <li class="meta-cat"><i class="fa fa-folder-open"></i><a href="/articles/category/{{ $article->category }}" rel="category tag">{{ $category_rus }}</a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="entry-content">
                                 <?php
-                                    // remove text formatting tags
+                                    // remove text formatting html tags
                                     $article_text =  strip_tags($article->text);
                                 ?>
                                 <p>{!! str_limit($article_text, $limit = 240, $end = '...') !!}</p>
@@ -73,7 +76,7 @@
                                     $comment_count[$article->id] = 0;
                                 ?>
                                 <a href="/articles/{{ $article->id }}/#article-comment-block" class="meta_comments f-left shape new-angle button-comment">{{$comment_count[$article->id] }} <i class="glyphicon glyphicon-comment"></i></a>
-                                <a href="#" class="jm-post-like f-left shape new-angle button-like" data-post_id="1178" title="Like">0 <i id="icon-unlike" class="fa fa-heart"></i></a>
+                                <a href="#" class="jm-post-like f-left shape new-angle button-like" title="Like">0 <i id="icon-unlike" class="fa fa-heart"></i></a>
                                 <a class="f-right more_btn shape new-angle button-read-more" href="/articles/{{ $article->id }}">Читать далее</a>
                                 @if(!Auth::guest())
                                     @if(Auth::user()->id == $article->user_id)

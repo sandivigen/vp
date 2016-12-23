@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     {!! Form::label('category', 'Категория') !!}
-                                    {!! Form::select('category', $value = array('Workshop' => 'Workshop', 'Biking' => 'Biking', 'Other' => 'Other'), $value ='0', $attributes = ['class' => 'form-control', 'name' => 'category']) !!}<br>
+                                    {!! Form::select('category', $value = array('News' => 'Новости', 'None' => 'Нет категории'), $value ='0', $attributes = ['class' => 'form-control', 'name' => 'category']) !!}<br>
                                 </div>
                                 {{--удалить video-toggle-wrapper, это я делал чтобы при нажатии выдавал с наала или нет показывать--}}
                                 <div class="video-toggle-wrapper">

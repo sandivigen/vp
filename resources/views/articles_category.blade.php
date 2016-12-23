@@ -21,14 +21,16 @@
     }
 ?>
 
-{{--{{ Debugbar::info($comments) }}--}}
-
+{{--{{ Debugbar::info($category) }}--}}
 
 @section('content')
 
     <div class="row">
         <div class="col-md-12">
-            <h2><strong>Статьи категории: {{ $category }} </strong></h2>
+            @php
+                $category_title_rus = ($category == 'News' ? 'Новости' : 'Без категории');
+            @endphp
+            <h2><strong>Все статьи из категории: {{ $category_title_rus }} </strong></h2>
         </div>
     </div>
 
@@ -57,8 +59,10 @@
                                     <ul class="post-meta">
                                         <li class="meta-user"><i class="fa fa-user"></i><a href="/user/{{ $user[$article->user_id] }}">{{ $user[$article->user_id] }}</a></li>
                                         <li class="meta-date"><i class="fa fa-clock-o"></i>{{ $article->created_at->format('Y-m-d') }}</li>
-                                        <li></li>
-                                        <li class="meta-cat"><i class="fa fa-folder-open"></i><a href="/articles/category/{{ $article->category }}" rel="category tag">{{ $article->category }}</a></li>
+                                        @php
+                                            $category_rus = ($article->category == 'News' ? 'Новости' : 'Без категории');
+                                        @endphp
+                                        <li class="meta-cat"><i class="fa fa-folder-open"></i><a href="/articles/category/{{ $article->category }}" rel="category tag">{{ $category_rus }}</a></li>
                                     </ul>
                                 </div>
                             </div>
