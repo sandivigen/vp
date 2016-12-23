@@ -218,8 +218,8 @@ body label {
 
     box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.79);
 }
-    /*
-    ---------------- footer -------------------- */
+/*
+---------------- footer -------------------- */
 .footer {
     border-top: 1px solid rgba(12, 12, 12, 0.07);
     padding: 20px 0;
@@ -266,7 +266,9 @@ body h2 {
     font-size: 15px!important;;
     font-weight: 400!important;;
     line-height: normal;
-
+}
+.footer {
+    margin-top: 20px;
 }
 /*.article-thumbnail {*/
     /*max-width: 100px;*/
@@ -325,6 +327,7 @@ body h2 {
 /*
 -------------- used to vertically center elements, may need modification if you're not using default sizes. ---------------
 //  ne pomnu ot kuda eto
+// тут есть код от айфрема ютуба .show-article-video
 ----------------------------------------------------------- */
 .panel-table .panel-footer .col{
     line-height: 34px;
@@ -388,8 +391,9 @@ body h2 {
 }
 .show-article-video {
     margin: 0 auto;
-    width: 560px;
+    width: 100%;
     display: block;
+    height: 390px;
 }
 .panel-content-article {
     padding-top: 0px!important;
@@ -880,6 +884,27 @@ body .button-read-more:hover {
 .single-post .post-content {
     background: #FFFFFF;
 }
-
-
-
+/*При проверки верефикации показывает незаполненые поля - создание статьи*/
+.has-error-textarea .mce-tinymce {
+    border-color: #d64226;
+}
+.triangle-error {
+    border: 1px solid #d64226;
+    border-radius: 7px;
+    padding: 3px 5px;
+    color: #d64226;
+    background: rgba(214, 66, 38, 0.09);
+}
+.triangle-error .glyphicon-info-sign {
+    color: #d64226;
+}
+body .has-error .form-control {
+    border-color: #d64226;
+}
+.has-error-thumbnail .thumbnail-error-wrapper {
+    border: 1px solid #d64226;
+    border-radius: 0 17px 0 17px;
+}
+.has-error-textarea .mce-edit-area {
+    border-right: 1px solid!important;
+}
