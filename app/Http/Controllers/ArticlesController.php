@@ -240,7 +240,7 @@ class ArticlesController extends Controller
 
         if ($redirect == 'article_list') {
             return \Redirect::route('articles.index')
-                ->with('message', 'Article update');
+                ->with('message', 'Статья обновлена');
         } elseif ($redirect == 'profile'){
 //            $article = Articles::find($id);
 //            $user = User::find($article->user_id);
@@ -249,7 +249,7 @@ class ArticlesController extends Controller
             return Redirect::action('UserController@profilePageArticles', Auth::user()->name);
         } else {
             return redirect()->route('articles.show', $id)
-                ->with('message', 'Article update');
+                ->with('message', 'Статья обновлена');
         }
 
     }
@@ -266,7 +266,7 @@ class ArticlesController extends Controller
         $this->dispatch($command);
 
         return \Redirect::route('articles.index')
-            ->with('message', 'Article Removed');
+            ->with('message', 'Статья удалена');
     }
     /**
      * Category page.
@@ -275,12 +275,17 @@ class ArticlesController extends Controller
         $articles = Articles::where('category', '=', $category_name)->paginate(3);
         $users = User::all();
         $heading = 'Список статей категории - ' .  $category_name;
+        $comments = Comments::all();
+
         return view('articles_category', array(
             'articles' => $articles,
             'heading' => $heading,
             'users' => $users,
-            'category' => $category_name
+            'category' => $category_name,
+            'comments' => $comments
+
         ));
+
     }
     /**
      * My list articles.

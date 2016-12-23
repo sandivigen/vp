@@ -22,11 +22,7 @@
     }
 ?>
 
-{{ Debugbar::info($comments) }}
-
-
-
-
+{{--{{ Debugbar::info($comments) }}--}}
 
 @section('content')
 
@@ -37,9 +33,7 @@
     </div>
 
     <div class="row">
-
         <div class="col-md-9">
-
             @if($articles)
                 @foreach($articles as $article)
 
@@ -96,23 +90,12 @@
                         {{--</div>--}}
                     </div>
 
-
-
-
-
                     <div style="clear: both"></div>
 
-
                 @endforeach
-
-
             @else
-                <p>No Article Found</p>
+                <p>Статьи не найдены</p>
             @endif
-
-
-
-
 
         </div>
 
