@@ -10,6 +10,8 @@ use App\Articles;
 use App\User;
 use App\Comments;
 
+use File;
+
 use Auth;
 use Image;
 
@@ -17,21 +19,83 @@ use Image;
 class UserController extends Controller
 {
     public function profile() {
-        $heading = 'Мой профиль';
+        $heading = 'Мой профиль 1';
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
     public function update_avatar(Request $request) {
         // Handle the user upload of avatar
         $heading = 'Мой профиль';
-        if ($request->hasFile('avatar')){
-            $avatar = $request->file('avatar');
-            $filename = time() . '.' . $avatar->getClientOriginalExtension();
-            Image::make($avatar)->resize(300,300)->save(public_path('/uploads/avatars/'.$filename));
+        $avatar = $request->file('avatar');
 
-            $user = Auth::user();
-            $user->avatar = $filename;
-            $user->save();
+        // если миниатюра существует
+        if ($avatar) {
+
+            $avatar_filename = $avatar->getClientOriginalName(); // Получим имя картинки из объекта
+
+            // Модель файла ava_00001_timedata.jpg
+
+            $user_id = Auth::user()->id; // получаем id залогиненого пользователя
+
+
+            if ($user_id < 9) {
+                $symbols_alignment = "00000";
+            } elseif ($user_id < 99) {
+                $symbols_alignment = "0000";
+            } elseif ($user_id < 999) {
+                $symbols_alignment = "000";
+            } elseif ($user_id < 9999) {
+                $symbols_alignment = "00";
+            } elseif ($user_id < 99999) {
+                $symbols_alignment = "0";
+            } elseif ($user_id < 999999) {
+                $symbols_alignment = "";
+            }
+
+
+            $ext = pathinfo($avatar_filename);
+            $file_extension = ".".$ext['extension'];
+
+
+            $avatar_filename     = 'ava_'. $symbols_alignment . $user_id . '_'  . time(). $file_extension;          // создаем уникальное имя файла
+//            $avatar_filename_del = 'ava_'. $symbols_alignment . $user_id . '_'  . time(). '_del' . $file_extension; // Раньше создавал оригинальный файл  и удалял его, теперь понял, что можно просто перезаписать. // Создаем уникальное имя файла для удаления.
+            $avatar_filename_del = 'ava_'. $symbols_alignment . $user_id . '_'  . time() . $file_extension; // Раньше создавал оригинальный файл  и удалял его, теперь понял, что можно просто перезаписать. // Создаем уникальное имя файла для удаления.
+
+//            $avatar_filename = time() . '_' . $avatar_filename; // создаем уникальное имя файла
+
+            $path_avatar = 'uploads/avatars/';                                      // создаем путь к папке пользователя, где будут его аватарки
+            $path_avatar_original_file = $path_avatar . '/' . $avatar_filename_del; // Создаем путь для копии оригинального файла
+            $path_avatar_resize_file = $path_avatar . '/' . $avatar_filename;       // Создаем путь для оптимизированного файла
+
+            $avatar->move(public_path($path_avatar), $avatar_filename_del); // создает копию оригинала
+
+            $img = Image::make($path_avatar_original_file);                 // Добавляет объект оригинальной фотографии, для последующей обработки
+
+            // Обрезаем по меньшей стороне
+            $width = 200;
+            $height = 200;
+            $img->width() > $img->height() ? $width=null : $height=null;    // Большая сторона будет обрезатся
+            $img->resize($width, $height, function ($constraint) {          // Обрезаем более широкую или узкую сторону
+                $constraint->aspectRatio();                                 // образаем пропорционально от центра
+            });
+            $img->fit(200);                                                 // Обрезаем по меньшей стороне
+            $img->save($path_avatar_resize_file);                           // сохраняем оптимизированную картинку
+
+//            File::delete($path_avatar_original_file);                       // Раньше я удалял оригинальный файл, теперь понял, что можно просто его перезаписать
+
+            $user = Auth::user(); // Получаем массив пользователя
+
+            $old_avatar_filename = $user->avatar; // Наименование предыдущего файла картинки
+            $old_path_avatar_file = $path_avatar . '/' . $old_avatar_filename; // путь к старому файлу
+
+//            print_r($avatar_filename1);
+//            print_r($ext);
+
+//            File::delete($old_path_avatar_file); // удаляем старый файл
+
+            $user->avatar = 'avatar-id'.$user_id.'_'.$avatar_filename; // Вносим новое имя файла картинки
+            $user->save(); // скохраняем новое имя файла
         }
+
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
 
@@ -144,13 +208,11 @@ class UserController extends Controller
                 $user_id = $user->id;
         }
 
-//        $articles = Articles::where('user_id', '=', $user_id)->paginate(3);
-
-//        $comments = Comments::all()->sortByDesc('id');
         $comments = Comments::where('user_id', '=', $user_id)->paginate(3);
         $articles = Articles::all();
-        $users = User::all();
 
+//        print_r($users['id']);
+        
         // Check if the user exists(существует)
         $user_exists = 0;
         foreach ($users as $user) {
@@ -175,6 +237,8 @@ class UserController extends Controller
                 'comments' => $comments,
                 'user_exists' => 1,
                 'user' => $user,
+                'user_name' => $user_name,
+                'user_id' => $user_id,
             ));
         } else {
 
