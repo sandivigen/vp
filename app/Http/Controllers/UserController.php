@@ -27,7 +27,7 @@ class UserController extends Controller
         $heading = 'Мой профиль';
         $avatar = $request->file('avatar');
 
-        // если миниатюра существует
+        // если миниатюра существует, а она всегда существует, проверку можно удалить
         if ($avatar) {
 
             $user_id = Auth::user()->id;                                            // получаем id залогиненого пользователя
@@ -51,24 +51,23 @@ class UserController extends Controller
             // Обрезаем по меньшей стороне
             $width = 200;
             $height = 200;
-            $img->width() > $img->height() ? $width=null : $height=null;    // Большая сторона будет обрезатся
-            $img->resize($width, $height, function ($constraint) {          // Обрезаем более широкую или узкую сторону
-                $constraint->aspectRatio();                                 // образаем пропорционально от центра
+            $img->width() > $img->height() ? $width=null : $height=null;            // Большая сторона будет обрезатся
+            $img->resize($width, $height, function ($constraint) {                  // Обрезаем более широкую или узкую сторону
+                $constraint->aspectRatio();                                         // образаем пропорционально от центра
             });
-            $img->fit(200);                                                 // Обрезаем по меньшей стороне
-            $img->save($path_avatar_file);                                  // сохраняем оптимизированную картинку, ПЕРЕЗАПИСЫВАЯ оригинальную картинку
+            $img->fit(200);                                                         // Обрезаем по меньшей стороне
+            $img->save($path_avatar_file);                                          // сохраняем оптимизированную картинку, ПЕРЕЗАПИСЫВАЯ оригинальную картинку
 
-            $user = Auth::user();                                           // Получаем массив пользователя
+            $user = Auth::user();                                                   // Получаем массив пользователя
 
             $old_avatar_filename = $user->avatar;                                   // Название предыдущего файла картинки
             if ($old_avatar_filename != 'no_avatar.jpg') {                          // Если название не менялось, стоит картинка по умолчанию, то ее трогать не будем
-                echo 'no-avatar';
                 $old_path_avatar_file = $path_avatar . '/' . $old_avatar_filename;  // путь к старому файлу
                 File::delete($old_path_avatar_file);                                // удаляем старый файл
             }
 
-            $user->avatar = $avatar_filename;                               // Вносим новое имя файла картинки в объект юзера
-            $user->save();                                                  // скохраняем новое имя файла в базе данных
+            $user->avatar = $avatar_filename;                                       // Вносим новое имя файла картинки в объект юзера
+            $user->save();                                                          // скохраняем новое имя файла в базе данных
         }
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
