@@ -70,7 +70,6 @@ class UserController extends Controller
             $user->avatar = $avatar_filename;                               // Вносим новое имя файла картинки в объект юзера
             $user->save();                                                  // скохраняем новое имя файла в базе данных
         }
-
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
 
