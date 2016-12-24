@@ -31,7 +31,7 @@ class UserController extends Controller
         if ($avatar) {
 
             $user_id = Auth::user()->id;                                            // получаем id залогиненого пользователя
-            $avatar_filename = $avatar->getClientOriginalName();                    // Получим имя картинки из объекта
+            $user = Auth::user();                                                   // Получаем массив пользователя
 
             $symbols_alignment = 0;                                                 // Делаем дополнительные символы, для корректного отображения порядкового счета аватарок ava_00001.jpg
             if ($user_id < 9)        { $symbols_alignment = "00000"; }
@@ -39,15 +39,16 @@ class UserController extends Controller
             elseif ($user_id < 999)  { $symbols_alignment = "000"; }
             elseif ($user_id < 9999) { $symbols_alignment = "00"; }
 
-            $ext_info = pathinfo($avatar_filename);                                 // получаем элементы файла(имя, разшерение..)
+            $avatar_original_filename = $avatar->getClientOriginalName();           // Получим имя картинки из объекта загружанного через форму, это нужно было для того чтобы оставить оригинальное название файла
+            $ext_info = pathinfo($avatar_original_filename);                        // получаем масив данных файла(имя, разшерение..)
             $file_extension = ".".$ext_info['extension'];                           // получаем расшерение файла
 
-            $avatar_filename = 'ava_'.$symbols_alignment.$user_id.$file_extension;  // создаем уникальное имя файла
+            $avatar_filename = 'ava_'.$symbols_alignment.$user_id.'e'.time().$file_extension;  // создаем уникальное имя файла
             $path_avatar = 'uploads/avatars/';                                      // создаем путь к папке, где хранятся аватарки
-            $path_avatar_file = $path_avatar . '/' . $avatar_filename;              // Создаем путь для оптимизированного файла
-            $avatar->move(public_path($path_avatar), $avatar_filename);             // создает копию оригинала на сервере, для последующей обработки
-            $img = Image::make($path_avatar_file);                                  // Добавляет объект оригинальной фотографии, для обработки
-
+            $path_avatar_file = $path_avatar . $avatar_filename;                    // Создаем путь для оптимизированного файла
+            $avatar->move(public_path($path_avatar), $avatar_filename);             // берет картинку из формы и делает копию на сервере
+            $img = Image::make($path_avatar_file);                                  // Добавляет объект от оригинальной фотографии, для обработки
+            
             // Обрезаем по меньшей стороне
             $width = 200;
             $height = 200;
@@ -57,8 +58,6 @@ class UserController extends Controller
             });
             $img->fit(200);                                                         // Обрезаем по меньшей стороне
             $img->save($path_avatar_file);                                          // сохраняем оптимизированную картинку, ПЕРЕЗАПИСЫВАЯ оригинальную картинку
-
-            $user = Auth::user();                                                   // Получаем массив пользователя
 
             $old_avatar_filename = $user->avatar;                                   // Название предыдущего файла картинки
             if ($old_avatar_filename != 'no_avatar.jpg') {                          // Если название не менялось, стоит картинка по умолчанию, то ее трогать не будем
