@@ -47,18 +47,18 @@
 
 
 
-                            {{--<div class="panel-controls-article">--}}
+                            <div class="panel-controls-article">
 
                                 @if(!Auth::guest())
                                     @if(Auth::user()->id == $comment->user_id)
-                                        {{--<div class="comment-controls">--}}
-                                            {!! Form::open(array('action' => ['CommentsController@nopublish', $comment->id], 'enctype' => 'multipart/form-data')) !!}
-                                            {!! Form::button('<i class="icon-trash"></i>', ['class' => 'btn', 'role' => 'button', 'type' => 'submit']) !!}
+                                        <div class="comment-controls">
+                                            {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
+                                            {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['class' => 'btn', 'role' => 'button', 'type' => 'submit']) !!}
                                             {!! Form::close() !!}
-                                        {{--</div>--}}
+                                        </div>
                                     @endif
                                 @endif
-                            {{--</div>--}}
+                            </div>
                         </div>
 
 

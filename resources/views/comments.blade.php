@@ -27,7 +27,7 @@
                     <th><a href="#" data-toggle="tooltip" title="В кокой категории был создан">C_Category</a></th>
                     <th><a href="#" data-toggle="tooltip" title="ID Item - к какой ид пришадлежит(пр. категория: статьи, ид: 102. Этот комент для 102 статьи">i</a></th>
                     <th><a href="#" data-toggle="tooltip" title="Public - опубликован или удален">P</a></th>
-                    <th><a href="#" data-toggle="tooltip" title="Like - счетчик лайков">L</a></th>
+                    {{--<th><a href="#" data-toggle="tooltip" title="Like - счетчик лайков">L</a></th>--}}
                     <th>Дата создания</th>
                 </tr>
                 </thead>
@@ -38,7 +38,7 @@
                         <td align="center" class="comment-btn-block">
                             <a href="comments/{{ $comment->id }}/edit" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
 
-                            {!! Form::open(array('action' => ['CommentsController@nopublish', $comment->id], 'enctype' => 'multipart/form-data')) !!}
+                            {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
                             <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-close"></em></button>
                             {!! Form::close() !!}
 
@@ -53,7 +53,7 @@
                         <td>{{ $comment->type_category }}</td>
                         <td>{{ $comment->category_item_id }}</td>
                         <td>{{ $comment->publish }}</td>
-                        <td>{{ $comment->like }}</td>
+                        {{--<td>{{ $comment->like }}</td>--}}
                         <td>{{ $comment->created_at }}</td>
                     </tr>
                 @endforeach

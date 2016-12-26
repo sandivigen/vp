@@ -26,7 +26,7 @@ Route::get('articles/category/{category_name}', 'ArticlesController@showCategory
 
 
 Route::resource('comments', 'CommentsController');
-Route::post('nopublish/{id}', 'CommentsController@nopublish');
+Route::post('delete_comment/{id}', 'CommentsController@delete');
 
 
 Route::get('profile', 'UserController@profile');

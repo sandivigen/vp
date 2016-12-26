@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
 
@@ -160,18 +161,18 @@ class CommentsController extends Controller
 //        return \Redirect::route('comments.index')
 //            ->with('message', $text_message);
     }
-    public function destroyin($id)
-    {
-        // need comments for this method!!!
-        $command = new DestroyCommentCommand($id);
-        $this->dispatch($command);
-
-        $text_message = 'Comment #'.$id.' Removed';
-//        return \Redirect::route('articles.index')
-        return redirect('articles/32')
-            ->with('message', $text_message);
-    }
-    public function nopublish(Request $request, $id)
+//    public function destroyin($id)
+//    {
+//        // need comments for this method!!!
+//        $command = new DestroyCommentCommand($id);
+//        $this->dispatch($command);
+//
+//        $text_message = 'Comment #'.$id.' Removed';
+////        return \Redirect::route('articles.index')
+//        return redirect('articles/32')
+//            ->with('message', $text_message);
+//    }
+    public function delete(Request $request, $id)
     {
         $comment = Comments::find($id);
 
@@ -184,15 +185,38 @@ class CommentsController extends Controller
         $publish = 0;
         $like = $comment->like;
 
+        $uri = $request->path();
 
         // Create Command
         $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
-        // Run Command
-        $this->dispatch($command);
+
+        // Проверка является ли сообщение того пользователя, который пытается его удалить
+        $auth_user_id = Auth::user()->id;
+
+        if ($user_id == $auth_user_id) {
+            // Run Command
+            $this->dispatch($command);
+            return back()
+                ->with('message', 'Комментарий удален');
+        } else {
+
+            DB::table('hacking_attempt')->insert([
+                'place' => 'удаление комментария '.$uri,
+                'object' => 'комментарий номер: '.$id,
+                'who' => 'попытался пользователь: '.$auth_user_id,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ]);
+
+            return back()
+                ->with('message', 'У вас нет прав для удаления этого комментария');
+        }
+
+
+
 
 //        $redirect_url = $type_category.'s/'.$category_item_id;
 //        return redirect($redirect_url)
-        return back()
-            ->with('message', 'Комментарий удален');
+
     }
 }

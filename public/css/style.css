@@ -370,11 +370,11 @@ body h2 {
     font-size: 19px;
     margin-left: 10px;
 }
-#article-comment-block .comment-icon-right button {
-    background: transparent;
-    padding: 0;
-    color: #cccccc;
-}
+/*#article-comment-block .comment-icon-right button {*/
+    /*background: transparent;*/
+    /*padding: 0;*/
+    /*color: #cccccc;*/
+/*}*/
 .sidebar-article-user img {
     border-radius: 50%;
 }
