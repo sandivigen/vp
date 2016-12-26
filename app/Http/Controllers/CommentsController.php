@@ -23,9 +23,11 @@ class CommentsController extends Controller
      */
     public function index()
     {
-//        $articles = Articles::paginate(4);
-//        $users = User::all();
-        $comments = Comments::all()->sortBy('id');
+//        $comments = Comments::all()->sortByDesc('id');
+        $comments = Comments::where('user_id', '>', -1)->orderBy('id', 'desc')->paginate(10);
+        $comments_count = Comments::all()->count();
+        $amount_pages = ceil($comments_count / 10);
+
 
         $heading = 'Все комментарии';
         return view('comments', array(
@@ -33,6 +35,7 @@ class CommentsController extends Controller
             'heading' => $heading,
 //            'users' => $users,
             'comments' => $comments,
+            'amount_pages' => $amount_pages,
         ));
     }
 
