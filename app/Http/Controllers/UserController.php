@@ -48,7 +48,7 @@ class UserController extends Controller
             $path_avatar_file = $path_avatar . $avatar_filename;                    // Создаем путь для оптимизированного файла
             $avatar->move(public_path($path_avatar), $avatar_filename);             // берет картинку из формы и делает копию на сервере
             $img = Image::make($path_avatar_file);                                  // Добавляет объект от оригинальной фотографии, для обработки
-            
+
             // Обрезаем по меньшей стороне
             $width = 200;
             $height = 200;
@@ -81,8 +81,6 @@ class UserController extends Controller
             if ($user->name == $user_name)
                 $user_id = $user->id;
         }
-
-//        print_r($articles);
 
         $articles = Articles::where('user_id', '=', $user_id)->paginate(3);
 
@@ -170,6 +168,7 @@ class UserController extends Controller
         }
     }
 
+    // страница для просмотра разными пользователями
     public function profilePage($user_name) {
 
         $users = User::all();
@@ -180,11 +179,12 @@ class UserController extends Controller
                 $user_id = $user->id;
         }
 
-        $comments = Comments::where('user_id', '=', $user_id)->paginate(3);
-        $articles = Articles::all();
+        $user_comments = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->get()->take(10);
+        $user_articles = Articles::where('user_id', '=', $user_id)->get()->take(3);
+        $articles = Articles::all(); // выбмраем все статьи для определения заголовка к какой статье пренадлежит комментарий
+        $articles_count = Articles::where('user_id', '=', $user_id)->count(); // получаем сумму всех статей пользователя
+        $comments_count = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->count(); // получаем сумму всех сообщений пользователя, из них выбираем опубликванные
 
-//        print_r($users['id']);
-        
         // Check if the user exists(существует)
         $user_exists = 0;
         foreach ($users as $user) {
@@ -194,23 +194,19 @@ class UserController extends Controller
 
         if ($user_exists == 1) {
 
-            // получаем ид юзера из его имени
-            foreach ($users as $user) {
-                if ($user->name == $user_name)
-                    $user_id = $user->id;
-            }
             $user = User::find($user_id);
 
             $heading = 'Профиль пользователя: ' . $user_name;
 
             return view('profile_page', array(
                 'heading' => $heading,
-                'articles' => $articles,
-                'comments' => $comments,
+                'user_articles' => $user_articles,
+                'user_comments' => $user_comments,
                 'user_exists' => 1,
-                'user' => $user,
-                'user_name' => $user_name,
-                'user_id' => $user_id,
+                'articles_count' => $articles_count,
+                'comments_count' => $comments_count,
+                'articles' => $articles,
+                'user' => $user
             ));
         } else {
 
