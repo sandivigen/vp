@@ -272,8 +272,10 @@ class ArticlesController extends Controller
         $command = new DestroyArticleCommand($id);
         $this->dispatch($command);
 
-        return \Redirect::route('articles.index')
-            ->with('message', 'Статья удалена');
+//        return \Redirect::route('articles.index')
+//            ->with('message', 'Статья удалена');
+
+        return back()->with('message', 'Статья удалена');
     }
     /**
      * Category page.

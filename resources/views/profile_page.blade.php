@@ -5,7 +5,7 @@
 {{--{{ Debugbar::info($comments) }}--}}
 {{--{{ Debugbar::info($articles_all) }}--}}
 @section('content')
-    <div class="container profile-page">
+    <div class="profile-page">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -62,7 +62,29 @@
                                                                                         @if(Auth::user()->id == $article->user_id)
                                                                                             <a href="/articles/{{ $article->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
                                                                                             {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id], 'class' => 'form-delete-userpage']) !!}
-                                                                                            <button type="submit" class="btn btn-danger btn-xs"><em class="fa fa-trash"></em></button>
+
+                                                                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteArticle"><em class="fa fa-trash"></em></button>
+
+                                                                                            <!-- Modal -->
+                                                                                            <div id="deleteArticle" class="modal fade" role="dialog">
+                                                                                                <div class="modal-dialog">
+                                                                                                    <!-- Modal content-->
+                                                                                                    <div class="modal-content">
+                                                                                                        <div class="modal-header">
+                                                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                            <h4 class="modal-title">Удалить статью</h4>
+                                                                                                        </div>
+                                                                                                        <div class="modal-body">
+                                                                                                            <p>Вы уверены что хотите удалить статью "{{ $article->title }}"?</p>
+                                                                                                        </div>
+                                                                                                        <div class="modal-footer">
+                                                                                                            <button type="submit" class="btn btn-danger" >Да</button>
+                                                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+
                                                                                             {!! Form::close() !!}
                                                                                         @endif
                                                                                     @endif

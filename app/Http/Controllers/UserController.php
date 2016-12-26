@@ -179,8 +179,8 @@ class UserController extends Controller
                 $user_id = $user->id;
         }
 
-        $user_comments = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->get()->take(10);
-        $user_articles = Articles::where('user_id', '=', $user_id)->get()->take(3);
+        $user_comments = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->get()->sortByDesc('id')->take(10);
+        $user_articles = Articles::where('user_id', '=', $user_id)->get()->sortByDesc('id')->take(3);
         $articles = Articles::all(); // выбмраем все статьи для определения заголовка к какой статье пренадлежит комментарий
         $articles_count = Articles::where('user_id', '=', $user_id)->count(); // получаем сумму всех статей пользователя
         $comments_count = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->count(); // получаем сумму всех сообщений пользователя, из них выбираем опубликванные
