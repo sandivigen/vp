@@ -89,11 +89,12 @@
                                     <ul class="dropdown-menu dropdown-menu-animate drop-menu-right">
                                         <li><a href="/articles/create">Добавить статью</a></li>
                                         {{--<li><a href="#"><i class="fa fa-star"></i>Аксессуар</a></li>--}}
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}/comments"><i class="icon-user"></i><span>Список комментариев</span></a></li>
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}/articles"><i class="icon-user"></i><span>Список статей</span></a></li>
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}"><i class="icon-user"></i><span>Мой профиль</span></a></li>
-                                        <li><a href="{{ url('/profile') }}"><i class="icon-user"></i><span>Редактировать профиль</span></a></li>
-                                        <li><a href="{{ url('/logout') }}"><i class="icon-logout"></i><span>Выйти</span></a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}/comments">Список комментариев</a></li>
+                                        <li><a href="/comments"><span>Все комментарии</span></a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}/articles">Список статей</a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}">Мой профиль</a></li>
+                                        <li><a href="{{ url('/profile') }}">Редактировать профиль</a></li>
+                                        <li><a href="{{ url('/logout') }}">Выйти</a></li>
                                     </ul>
                                 </li>
                             @endif

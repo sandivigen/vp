@@ -145,18 +145,51 @@
                                                     <div class="table-container">
                                                         <table class="table table-filter">
                                                             <tbody>
-                                                            @foreach($user_comments as $user_comment)
+                                                            @foreach($user_comments as $comment)
                                                                 {{--                                                    @if($user->id == $comment->user_id)--}}
                                                                 <tr data-status="pagado">
                                                                     <td>
                                                                         <div class="media">
                                                                             <div class="media-body">
-                                                                                <span class="media-meta pull-right">{{ $user_comment->created_at->format('Y-m-d') }}</span>
+                                                                                <span class="media-meta pull-right">{{ $comment->created_at->format('Y-m-d') }}</span>
                                                                                 <h4 class="title">
-                                                                                    <a href="/articles/{{ $user_comment->category_item_id }}"> {{ $article_list[$user_comment->category_item_id] }}</a>
+                                                                                    <a href="/articles/{{ $comment->category_item_id }}"> {{ $article_list[$comment->category_item_id] }}</a>
                                                                                     {{--<span class="pull-right pagado">Like (0)</span>--}}
+                                                                                    @if(!Auth::guest())
+                                                                                        @if(Auth::user()->id == $comment->user_id)
+                                                                                            <a href="/comments/{{ $comment->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
+                                                                                            {!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id], 'class' => 'form-delete-userpage']) !!}
+
+                                                                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteComment-{{ $comment->id }}"><em class="fa fa-trash"></em></button>
+
+                                                                                            <!-- Modal -->
+                                                                                            <div id="deleteComment-{{ $comment->id }}" class="modal fade" role="dialog">
+                                                                                                <div class="modal-dialog">
+                                                                                                    <!-- Modal content-->
+                                                                                                    <div class="modal-content">
+                                                                                                        <div class="modal-header">
+                                                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                            <h4 class="modal-title">Вы точно хотите удалить комментарий?</h4>
+                                                                                                        </div>
+                                                                                                        <div class="modal-body">
+                                                                                                            <p>"{{ $comment->comment_text }}"</p>
+                                                                                                        </div>
+                                                                                                        <div class="modal-footer">
+                                                                                                            <button type="submit" class="btn btn-danger" >Да</button>
+                                                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </div>
+
+                                                                                            {!! Form::close() !!}
+                                                                                        @endif
+                                                                                    @endif
                                                                                 </h4>
-                                                                                <p class="summary">{{ $user_comment->comment_text }}</p>
+
+
+
+                                                                                <p class="summary">{{ $comment->comment_text }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </td>

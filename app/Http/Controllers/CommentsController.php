@@ -80,7 +80,7 @@ class CommentsController extends Controller
         $redirect_url = $type_category.'s/'.$category_item_id;
 
         return redirect($redirect_url)
-            ->with('message', $guest_name.' ваше сообщение успешно добавленно');
+            ->with('message', $guest_name.' Ваше сообщение успешно добавленно');
     }
 
     /**
@@ -145,16 +145,17 @@ class CommentsController extends Controller
     {
         $command = new DestroyCommentCommand($id);
 
-        $redirect_category = Comments::find($id)->type_category;
-        $redirect_id = Comments::find($id)->category_item_id;
-        $redirect_url = $redirect_category.'s/'.$redirect_id;
-        $text_message = 'Comment #'.$id.' Removed';
+//        $redirect_category = Comments::find($id)->type_category;
+//        $redirect_id = Comments::find($id)->category_item_id;
+//        $redirect_url = $redirect_category.'s/'.$redirect_id;
+//        $text_message = 'Comment #'.$id.' Removed';
 
         $this->dispatch($command);
 
-//        return redirect($redirect_url)
-      return \Redirect::route('comments.index')
-            ->with('message', $text_message);
+        return back()->with('message', 'Комментарий удален');
+
+//        return \Redirect::route('comments.index')
+//            ->with('message', $text_message);
     }
     public function destroyin($id)
     {
