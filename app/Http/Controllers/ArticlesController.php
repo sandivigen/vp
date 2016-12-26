@@ -165,11 +165,15 @@ class ArticlesController extends Controller
         $article = Articles::find($id);
         $heading = 'Редактировать статью';
 
-        if(isset($_GET['red']) && $_GET['red'] == 'list') {
-            $redirect = 'article_list';
-        } elseif(isset($_GET['red']) && $_GET['red'] == 'profile') {
-            $redirect = 'profile';
-        } else {
+        if(isset($_GET['red'])) { // если у ГЕТ есть праваметр red, то будем делать редирект
+            if ($_GET['red'] == 'list') {
+                $redirect = 'article_list';
+            } if ($_GET['red'] == 'profile_page') {
+                $redirect = 'profile_page';
+            } elseif ($_GET['red'] == 'profile') {
+                $redirect = 'profile';
+            }
+        } else { // иначе будем редеректить на страницу просмотра статьи
             $redirect = 'article_show';
         }
 
@@ -247,12 +251,15 @@ class ArticlesController extends Controller
 //            $user_name = $user->name;
 //            return Redirect::action('UserController@profilePage', $user_name);
             return Redirect::action('UserController@profilePageArticles', Auth::user()->name);
+        } elseif ($redirect == 'profile_page'){
+            return Redirect::action('UserController@profilePage', Auth::user()->name);
         } else {
             return redirect()->route('articles.show', $id)
                 ->with('message', 'Статья обновлена');
         }
 
     }
+
 
     /**
      * Remove the specified resource from storage.
