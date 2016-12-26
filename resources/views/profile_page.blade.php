@@ -63,10 +63,10 @@
                                                                                             <a href="/articles/{{ $article->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
                                                                                             {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id], 'class' => 'form-delete-userpage']) !!}
 
-                                                                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteArticle"><em class="fa fa-trash"></em></button>
+                                                                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteArticle-{{ $article->id }}"><em class="fa fa-trash"></em></button>
 
                                                                                             <!-- Modal -->
-                                                                                            <div id="deleteArticle" class="modal fade" role="dialog">
+                                                                                            <div id="deleteArticle-{{ $article->id }}" class="modal fade" role="dialog">
                                                                                                 <div class="modal-dialog">
                                                                                                     <!-- Modal content-->
                                                                                                     <div class="modal-content">
