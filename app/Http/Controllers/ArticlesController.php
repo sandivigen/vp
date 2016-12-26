@@ -170,8 +170,8 @@ class ArticlesController extends Controller
                 $redirect = 'article_list';
             } if ($_GET['red'] == 'profile_page') {
                 $redirect = 'profile_page';
-            } elseif ($_GET['red'] == 'profile') {
-                $redirect = 'profile';
+            } elseif ($_GET['red'] == 'profile_articles') {
+                $redirect = 'profile_articles';
             }
         } else { // иначе будем редеректить на страницу просмотра статьи
             $redirect = 'article_show';
@@ -245,7 +245,7 @@ class ArticlesController extends Controller
         if ($redirect == 'article_list') {
             return \Redirect::route('articles.index')
                 ->with('message', 'Статья обновлена');
-        } elseif ($redirect == 'profile'){
+        } elseif ($redirect == 'profile_articles'){
 //            $article = Articles::find($id);
 //            $user = User::find($article->user_id);
 //            $user_name = $user->name;

@@ -67,7 +67,7 @@
                                                                         <a href="/articles/{{ $article->id }}"> {{ $article->title }}</a>
                                                                         @if(!Auth::guest())
                                                                             @if(Auth::user()->id == $article->user_id)
-                                                                                <a href="/articles/{{ $article->id }}/edit?red=profile" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
+                                                                                <a href="/articles/{{ $article->id }}/edit?red=profile_articles" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
                                                                                 {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id], 'class' => 'form-delete-userpage']) !!}
                                                                                 <button type="submit" class="btn btn-danger btn-xs"><em class="fa fa-trash"></em></button>
                                                                                 {!! Form::close() !!}
