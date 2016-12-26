@@ -908,3 +908,14 @@ body .has-error .form-control {
 .has-error-textarea .mce-edit-area {
     border-right: 1px solid!important;
 }
+/*
+-------------- для страницы профиля (profile_page) --------------- */
+.profile-user-photo {
+    margin: 0 auto;
+}
+.profile-page .user-page-top-block {
+    margin-bottom: 20px;
+}
+.profile-page .table-filter .media-photo {
+    width: 85px;
+}

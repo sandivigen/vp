@@ -5,17 +5,17 @@
 {{--{{ Debugbar::info($comments) }}--}}
 {{--{{ Debugbar::info($articles_all) }}--}}
 @section('content')
-    <div class="container">
+    <div class="container profile-page">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Профиль пользователя <strong>{{ $user->name }}</strong></div>
+                    <div class="panel-heading">Профиль пользователя: {{ $user->name }}</div>
 
                     <div class="panel-body">
                         <div class="wrapper-user-page">
-                            <div class="row">
+                            <div class="row user-page-top-block">
                                 <div class="col-md-3">
-                                    <img class="img-responsive user-photo" src="/uploads/avatars/{{ $user->avatar }}" >
+                                    <img class="img-responsive profile-user-photo" src="/uploads/avatars/{{ $user->avatar }}" >
                                 </div>
                                 <div class="col-md-9">
                                     <ul class="list-group">
@@ -27,10 +27,6 @@
                                     </ul>
                                 </div>
                             </div>
-
-                            <br>
-                            <br>
-                            <br>
 
                             <div class="row">
 
