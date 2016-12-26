@@ -87,12 +87,13 @@
                                         <span class="username">Hi, {{ Auth::user()->name }}</span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-animate drop-menu-right">
-                                        <li><a href="/articles/create"><i class="fa fa-file-text"></i>Статью</a></li>
-                                        <li><a href="#"><i class="fa fa-star"></i>Аксессуар</a></li>
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}/comments"><i class="icon-user"></i><span>Comments list</span></a></li>
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}/articles"><i class="icon-user"></i><span>Articles list</span></a></li>
-                                        <li><a href="{{ url('/profile') }}"><i class="icon-user"></i><span>Avatar</span></a></li>
-                                        <li><a href="{{ url('/logout') }}"><i class="icon-logout"></i><span>Logout</span></a></li>
+                                        <li><a href="/articles/create">Добавить статью</a></li>
+                                        {{--<li><a href="#"><i class="fa fa-star"></i>Аксессуар</a></li>--}}
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}/comments"><i class="icon-user"></i><span>Список комментариев</span></a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}/articles"><i class="icon-user"></i><span>Список статей</span></a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}"><i class="icon-user"></i><span>Мой профиль</span></a></li>
+                                        <li><a href="{{ url('/profile') }}"><i class="icon-user"></i><span>Редактировать профиль</span></a></li>
+                                        <li><a href="{{ url('/logout') }}"><i class="icon-logout"></i><span>Выйти</span></a></li>
                                     </ul>
                                 </li>
                             @endif

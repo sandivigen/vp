@@ -14,7 +14,7 @@
             $article_list[$value->id] = $value->title;
         }
 
-    Debugbar::info($user);
+//    Debugbar::info($user);
 //    Debugbar::info($user_t);
     ?>
 
@@ -86,9 +86,8 @@
                         </div>
                     </div>
                 @else
-                    <p>No Comment Found</p>
+                    <p>Комментариев не найдено</p>
                 @endif
-
 
             </div>
         </div>
