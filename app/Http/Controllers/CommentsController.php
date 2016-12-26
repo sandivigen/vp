@@ -155,7 +155,7 @@ class CommentsController extends Controller
 
         $this->dispatch($command);
 
-        return back()->with('message', 'Комментарий удален');
+        return back()->with('message', 'Комментарий удален(совсем)');
 
 //        return \Redirect::route('comments.index')
 //            ->with('message', $text_message);
@@ -190,10 +190,9 @@ class CommentsController extends Controller
         // Run Command
         $this->dispatch($command);
 
-
-//        print_r($command);
-        $redirect_url = $type_category.'s/'.$category_item_id;
-        return redirect($redirect_url)
-            ->with('message', 'Сообщение удалено с видимости');
+//        $redirect_url = $type_category.'s/'.$category_item_id;
+//        return redirect($redirect_url)
+        return back()
+            ->with('message', 'Комментарий удален');
     }
 }

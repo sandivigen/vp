@@ -65,7 +65,10 @@
         </div>
         <div class="panel-footer">
             <div class="row">
-                <div class="col col-xs-4">Страница {{ $_GET['page'] }} из {{ $amount_pages }}
+                @php
+                    $num_page = (!isset($_GET['page']) ? 1 : $_GET['page']); // если есть Гет параметр то его используем, если нет то это первое вхождение  и это 1-я страница
+                @endphp
+                <div class="col col-xs-4">Страница {{ $num_page }} из {{ $amount_pages }}
                 </div>
                 <div class="col col-xs-8">
                     <ul class="pagination hidden-xs pull-right">
