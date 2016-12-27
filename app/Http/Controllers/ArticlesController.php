@@ -296,13 +296,4 @@ class ArticlesController extends Controller
         ));
 
     }
-    /**
-     * My list articles.
-     */
-    public function showMyArticles()
-    {
-        $articles = Articles::all();
-        $heading = 'Мои статьи';
-        return view('my_articles', array('articles' => $articles, 'heading' => $heading));
-    }
 }

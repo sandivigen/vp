@@ -21,7 +21,6 @@
 //Route::resource('accessories', 'AccessoriesController');
 
 Route::resource('articles', 'ArticlesController');
-Route::resource('my_articles', 'ArticlesController@showMyArticles');
 Route::get('articles/category/{category_name}', 'ArticlesController@showCategory');
 
 
