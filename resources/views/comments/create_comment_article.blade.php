@@ -1,4 +1,4 @@
-<h3>Отправить комментарий</h3>
+<h3>Оставить комментарий</h3>
 <div class="container_">
     <div class="row">
         <div class="col-xs-12">
@@ -22,7 +22,7 @@
                     <img class="control-label col-xs-1" src="/uploads/avatars/{{ $user[1]['avatar'] }}" >
                 @endif
                 <div class="col-xs-11">
-                    {!! Form::textarea('comment_text', $value='Text your comment...', $attributes = ['class' => 'form-control', 'name' => 'comment_text', 'rows'=> 3, 'placeholder' => 'Text your comment...']) !!}
+                    {!! Form::textarea('comment_text', $value='', $attributes = ['class' => 'form-control', 'name' => 'comment_text', 'rows'=> 3, 'placeholder' => 'Текст вашего комментария']) !!}
                 </div>
             </div>
 
