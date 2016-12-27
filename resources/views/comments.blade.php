@@ -47,10 +47,6 @@
                                 <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-open"></em></button>
                             {!! Form::close() !!}
 
-                            {{--{!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id]]) !!}--}}
-                                {{--<button type="submit" class="btn btn-danger btn-xs"><em class="fa fa-trash"></em></button>--}}
-                            {{--{!! Form::close() !!}--}}
-
                             {!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id]]) !!}
                                 <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#destroyComment-{{ $comment->id }}"><em class="fa fa-trash"></em></button>
                                 <!-- Modal -->
