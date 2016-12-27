@@ -37,6 +37,7 @@
 
                     <div class="panel panel-default comment-icon-right ">
                         <div class="panel-heading">
+
                             {{--If an unauthorized user--}}
                             @if($comment['user_id'] == 0)
                                 <strong><span>{{ $comment['guest_name'] }}</span></strong>
@@ -45,51 +46,58 @@
                             @endif
                             <span class="text-muted">{{ $comment->created_at->diffForHumans() }}</span>
 
+                            @if(!Auth::guest())
+                                @if(Auth::user()->id == $comment->user_id)
+
+                                    {!! Form::open(array('action' => ['CommentsController@updatePopup', $comment->id], 'enctype' => 'multipart/form-data', 'class' => 'form-delete-userpage', 'id' => 'form-update-popup')) !!}
+                                        <button type="button" class="btn btn-default btn-xs" data-toggle="collapse" data-target="#updateComment-{{ $comment->id }}"><em class="fa fa-pencil"></em></button>
+                                        <textarea id="comment_text" name="comment_text"></textarea>
+                                        <button type="submit" id="comment_update_submit"></button>
+
+                                    {!! Form::close() !!}
 
 
-                            <div class="panel-controls-article">
-
-                                @if(!Auth::guest())
-                                    @if(Auth::user()->id == $comment->user_id)
-                                        <div class="comment-controls">
-                                            {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
-                                            {!! Form::button('<i class="glyphicon glyphicon-trash"></i>', ['class' => 'btn', 'role' => 'button', 'type' => 'submit']) !!}
-                                            {!! Form::close() !!}
+                                    {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data', 'class' => 'form-delete-userpage')) !!}
+                                        <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteComment-{{ $comment->id }}"><em class="fa fa-trash"></em></button>
+                                        <!-- Modal -->
+                                        <div id="deleteComment-{{ $comment->id }}" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Вы точно хотите удалить комментарий?</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>"{{ $comment->comment_text }}"</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-danger" >Да</button>
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    @endif
+                                    </div>
+                                    {!! Form::close() !!}
+
                                 @endif
-                            </div>
+                            @endif
                         </div>
-
-
-
 
                         <div class="panel-body">
                             {{ $comment->comment_text }}
-                            {{--<hr>--}}
-                            <ul class="list-unstyled list-inline">
-
-                                {{--<li>--}}
-                                    {{--<button class="btn btn-xs btn-info" type="button" data-toggle="collapse" data-target="#view-comments-{{$article->id}}" aria-expanded="false" aria-controls="view-comments-{{$article->id}}">--}}
-                                        {{--<i class="fa fa-comments-o"></i>--}}
-                                        {{--Коментарии--}}
-                                    {{--</button>--}}
-                                {{--</li>--}}
-
-                                {{--<li>--}}
-                                    {{--{!! Form::open() !!}--}}
-                                    {{--{!! Form::hidden('like_status', $article->id) !!}--}}
-                                    {{--<button type="submit" class="btn btn-info btn-xs">--}}
-                                        {{--<i class="fa fa-thumbs-up"></i>--}}
-                                        {{--Нравится--}}
-                                        {{--<span class="lake-count">3</span>--}}
-                                    {{--</button>--}}
-                                    {{--{!! Form::close() !!}--}}
-                                {{--</li>--}}
-
-
-                            </ul>
                         </div>
+                        <div id="updateComment-{{ $comment->id }}" class="collapse panel-footer">
+                            <textarea name="comment_text" class="form-control" id="comment_input_text" cols="30" rows="4" >{{ $comment->comment_text }}</textarea>
+                            <button type="button" class="btn btn-primary" id="comment_input_submit" onclick="inputCommentText()">Сохранить</button>
+                        </div>
+                        <script>
+                            function inputCommentText() {
+                                var textComment = $('#comment_input_text').val();
+                                $('#comment_text').val(textComment);
+                                document.getElementById('comment_update_submit').click();
+                            }
+                        </script>
 
                         {{--Блок комментариев: ответы на коменты--}}
                         {{--<div class="panel-footer clearfix">--}}

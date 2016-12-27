@@ -328,6 +328,7 @@ body h2 {
 -------------- used to vertically center elements, may need modification if you're not using default sizes. ---------------
 //  ne pomnu ot kuda eto
 // тут есть код от айфрема ютуба .show-article-video
+есть выравнивание иконок в комментах на артиклшоу
 ----------------------------------------------------------- */
 .panel-table .panel-footer .col{
     line-height: 34px;
@@ -370,11 +371,7 @@ body h2 {
     font-size: 19px;
     margin-left: 10px;
 }
-/*#article-comment-block .comment-icon-right button {*/
-    /*background: transparent;*/
-    /*padding: 0;*/
-    /*color: #cccccc;*/
-/*}*/
+
 .sidebar-article-user img {
     border-radius: 50%;
 }
@@ -405,6 +402,13 @@ body h2 {
 }
 .comment-icon-right form {
     float: right;
+    margin-left: 5px;
+}
+#comment_update_submit, #comment_text {
+    display: none;
+}
+#comment_input_submit {
+    margin-top: 5px;
 }
 /* ==========================================================================
   2. ADDED ELEMENTS
@@ -500,7 +504,7 @@ body .open > .dropdown-menu-animate {
     color: #999;
 }
 .table-filter .media .title {
-    /*color: #2BBCDE;*/
+    color: #2BBCDE;
     font-size: 14px;
     font-weight: bold;
     line-height: normal;
