@@ -27,6 +27,7 @@ Route::get('articles/category/{category_name}', 'ArticlesController@showCategory
 
 Route::resource('comments', 'CommentsController');
 Route::post('delete_comment/{id}', 'CommentsController@delete');
+Route::post('un_delete_comment/{id}', 'CommentsController@unDelete');
 Route::post('update_comment/{id}', 'CommentsController@updatePopup');
 
 

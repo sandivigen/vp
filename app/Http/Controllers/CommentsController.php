@@ -211,6 +211,48 @@ class CommentsController extends Controller
             return back()->with('message', 'У вас нет прав для удаления этого комментария');
         }
     }
+    public function unDelete(Request $request, $id)
+    {
+        $comment = Comments::find($id);
+
+        // Вообще этот код выглядит избыточным, возможно как-то вносить апдейты не перечисляя все поля
+        // Можно тупо в базу, но думаю правельней через команду
+        // Get val in base
+        $comment_text = $comment->comment_text;
+        $user_id = $comment->user_id;
+        $guest_name = $comment->guest_name;
+        $type_category = $comment->type_category;
+        $category_item_id = $comment->category_item_id;
+        $publish = 1;
+        $like = $comment->like;
+
+        // Create Command
+        $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
+
+        // Проверка является ли сообщение того пользователя, который пытается его удалить
+        $auth_user_id = Auth::user()->id;
+        $uri = $request->path();
+
+        if ($user_id == $auth_user_id) {
+            // Run Command
+            $this->dispatch($command);
+
+            return back()->with('message', 'Изменено состояние комментария: опубликован ');
+        } else {
+            // Записываю в лог попытку хака (не уверен, что эта запись нужна)(в любом случае нужно переделывать все проверки в соотвтетствии с ролями)
+            DB::table('hacking_attempt')->insert([
+                'place' => 'сделать коммент вновь видимым '.$uri,
+                'object' => 'комментарий номер: '.$id,
+                'who' => 'попытался пользователь: '.$auth_user_id,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ]);
+
+            $this->dispatch($command);
+
+            return back()->with('message', 'У вас нет прав для изменения параметров этого комментария(пока все равно работает)');
+        }
+    }
     public function updatePopup(Request $request, $id)
     {
         // Get Input

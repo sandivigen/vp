@@ -42,6 +42,10 @@
                             <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-close"></em></button>
                             {!! Form::close() !!}
 
+                            {!! Form::open(array('action' => ['CommentsController@unDelete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
+                            <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-open"></em></button>
+                            {!! Form::close() !!}
+
                             {!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id]]) !!}
                             <button type="submit" class="btn btn-danger btn-xs"><em class="fa fa-trash"></em></button>
                             {!! Form::close() !!}
