@@ -102,10 +102,10 @@
                         <ul>
                             <li>
                                 <div class="post-img" style="float: left; margin-right: 10px;">
-                                    <a href="blog-single.html"><img alt="" style="width:40px;" src="/uploads/avatars/1465394901.png"></a>
+                                    <a href="blog-single.html"><img alt="" style="width:40px;" src="/uploads/avatars/{{ $user[$article->user_id]['avatar'] }}"></a>
                                 </div>
                                 <div class="widget-post-info">
-                                    <a href="/user/{{ $user[$article->user_id]['name'] }}/comments">{{ $user[$article->user_id]['name'] }}</a><br>
+                                    <a href="/user/{{ $user[$article->user_id]['name'] }}">{{ $user[$article->user_id]['name'] }}</a><br>
                                     <span>Пользователь</span>
                                 </div>
                             </li>
