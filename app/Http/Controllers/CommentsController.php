@@ -196,10 +196,10 @@ class CommentsController extends Controller
         if ($user_id == $auth_user_id) {
             // Run Command
             $this->dispatch($command);
-            return back()
-                ->with('message', 'Комментарий удален');
-        } else {
 
+            return back()->with('message', 'Комментарий удален');
+        } else {
+            // Записываю в лог попытку хака
             DB::table('hacking_attempt')->insert([
                 'place' => 'удаление комментария '.$uri,
                 'object' => 'комментарий номер: '.$id,
@@ -208,8 +208,7 @@ class CommentsController extends Controller
                 'updated_at' => date("Y-m-d H:i:s"),
             ]);
 
-            return back()
-                ->with('message', 'У вас нет прав для удаления этого комментария');
+            return back()->with('message', 'У вас нет прав для удаления этого комментария');
         }
     }
     public function updatePopup(Request $request, $id)
@@ -226,12 +225,33 @@ class CommentsController extends Controller
         $publish = $comment->publish;
         $like = $comment->like;
 
-        // Create Command
-        $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
-        // Run Command
-        $this->dispatch($command);
+        // Проверка является ли сообщение того пользователя, который пытается его редактировать
+        $auth_user_id = Auth::user()->id;
+        $uri = $request->path();
 
-        return back()
-            ->with('message', 'Комментарий отредактирован');
+        if ($user_id == $auth_user_id) {
+
+            // Create Command
+            $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
+
+            // Run Command
+            $this->dispatch($command);
+
+            return back()->with('message', 'Комментарий отредактирован');
+
+        } else {
+
+            // Записываю в лог попытку хака
+            DB::table('hacking_attempt')->insert([
+                'place' => 'редактирование комментария '.$uri,
+                'object' => 'комментарий номер: '.$id,
+                'who' => 'попытался пользователь: '.$auth_user_id,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ]);
+
+            return back()->with('message', 'У вас нет прав для редактирования этого комментария');
+        }
+
     }
 }
