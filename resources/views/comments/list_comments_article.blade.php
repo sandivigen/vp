@@ -44,7 +44,13 @@
                             @else
                                 <strong><a href="/user/{{ $user[$comment->user_id]['name'] }}">{{ $user[$comment->user_id]['name'] }}</a></strong>
                             @endif
-                            <span class="text-muted">{{ $comment->created_at->diffForHumans() }}</span>
+
+                            @if($comment->created_at != $comment->updated_at)
+                                <span class="text-muted"><small>{{ $comment->updated_at->diffForHumans() }} (изменено)</small></span>
+                            @else
+                                <span class="text-muted"><small>{{ $comment->created_at->diffForHumans() }}</small></span>
+                            @endif
+
 
                             @if(!Auth::guest())
                                 @if(Auth::user()->id == $comment->user_id)
