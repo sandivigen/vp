@@ -146,7 +146,6 @@
                                                         <table class="table table-filter">
                                                             <tbody>
                                                             @foreach($user_comments as $comment)
-                                                                {{--                                                    @if($user->id == $comment->user_id)--}}
                                                                 <tr data-status="pagado">
                                                                     <td>
                                                                         <div class="media">
@@ -157,44 +156,63 @@
                                                                                     {{--<span class="pull-right pagado">Like (0)</span>--}}
                                                                                     @if(!Auth::guest())
                                                                                         @if(Auth::user()->id == $comment->user_id)
-                                                                                            <a href="/comments/{{ $comment->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
-                                                                                            {!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id], 'class' => 'form-delete-userpage']) !!}
+                                                                                            {{--<a href="/comments/{{ $comment->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>--}}
 
-                                                                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteComment-{{ $comment->id }}"><em class="fa fa-trash"></em></button>
-
-                                                                                            <!-- Modal -->
-                                                                                            <div id="deleteComment-{{ $comment->id }}" class="modal fade" role="dialog">
+                                                                                            {!! Form::open(array('action' => ['CommentsController@updatePopup', $comment->id], 'enctype' => 'multipart/form-data', 'class' => 'form-delete-userpage')) !!}
+                                                                                                <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#updateComment-{{ $comment->id }}"><em class="fa fa-pencil"></em></button>
+                                                                                                <!-- Modal -->
+                                                                                                <div id="updateComment-{{ $comment->id }}" class="modal fade" role="dialog">
                                                                                                 <div class="modal-dialog">
                                                                                                     <!-- Modal content-->
                                                                                                     <div class="modal-content">
                                                                                                         <div class="modal-header">
                                                                                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                                                            <h4 class="modal-title">Вы точно хотите удалить комментарий?</h4>
+                                                                                                            <h4 class="modal-title">Редактировать комментарий</h4>
                                                                                                         </div>
                                                                                                         <div class="modal-body">
-                                                                                                            <p>"{{ $comment->comment_text }}"</p>
+                                                                                                            <textarea name="comment_text"  class="form-control" id="comment_text" cols="30" rows="4" >{{ $comment->comment_text }}</textarea>
                                                                                                         </div>
                                                                                                         <div class="modal-footer">
-                                                                                                            <button type="submit" class="btn btn-danger" >Да</button>
-                                                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                                                                            <button type="submit" class="btn btn-primary" >Сохранить</button>
+                                                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Отмена</button>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
-
                                                                                             {!! Form::close() !!}
+
+
+                                                                                            {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data', 'class' => 'form-delete-userpage')) !!}
+                                                                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteComment-{{ $comment->id }}"><em class="fa fa-trash"></em></button>
+                                                                                                <!-- Modal -->
+                                                                                                <div id="deleteComment-{{ $comment->id }}" class="modal fade" role="dialog">
+                                                                                                    <div class="modal-dialog">
+                                                                                                        <!-- Modal content-->
+                                                                                                        <div class="modal-content">
+                                                                                                            <div class="modal-header">
+                                                                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                                <h4 class="modal-title">Вы точно хотите удалить комментарий?</h4>
+                                                                                                            </div>
+                                                                                                            <div class="modal-body">
+                                                                                                                <p>"{{ $comment->comment_text }}"</p>
+                                                                                                            </div>
+                                                                                                            <div class="modal-footer">
+                                                                                                                <button type="submit" class="btn btn-danger" >Да</button>
+                                                                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            {!! Form::close() !!}
+
                                                                                         @endif
                                                                                     @endif
                                                                                 </h4>
-
-
-
                                                                                 <p class="summary">{{ $comment->comment_text }}</p>
                                                                             </div>
                                                                         </div>
                                                                     </td>
                                                                 </tr>
-                                                                {{--@endif--}}
                                                             @endforeach
                                                             </tbody>
                                                         </table>

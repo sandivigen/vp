@@ -61,6 +61,8 @@ class CommentsController extends Controller
     {
         // Get Input
         $comment_text = $request->input('comment_text');
+        $type_category = $request->input('type_category');
+        $category_item_id = $request->input('category_item_id');
         
         if(Auth::guest()){
             $user_id = 0;
@@ -72,8 +74,7 @@ class CommentsController extends Controller
             $guest_name = '';
         }
 
-        $type_category = $request->input('type_category');
-        $category_item_id = $request->input('category_item_id');
+
 
         // Create Command
         $command = new StoreCommentCommand($comment_text, $user_id, $guest_name, $type_category, $category_item_id);
@@ -176,7 +177,7 @@ class CommentsController extends Controller
     {
         $comment = Comments::find($id);
 
-        // Get Input
+        // Get val in base
         $comment_text = $comment->comment_text;
         $user_id = $comment->user_id;
         $guest_name = $comment->guest_name;
@@ -185,13 +186,12 @@ class CommentsController extends Controller
         $publish = 0;
         $like = $comment->like;
 
-        $uri = $request->path();
-
         // Create Command
         $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
 
         // Проверка является ли сообщение того пользователя, который пытается его удалить
         $auth_user_id = Auth::user()->id;
+        $uri = $request->path();
 
         if ($user_id == $auth_user_id) {
             // Run Command
@@ -211,12 +211,27 @@ class CommentsController extends Controller
             return back()
                 ->with('message', 'У вас нет прав для удаления этого комментария');
         }
+    }
+    public function updatePopup(Request $request, $id)
+    {
+        // Get Input
+        $comment_text = $request->input('comment_text');
 
+        // Get val in base
+        $comment = Comments::find($id);
+        $user_id = $comment->user_id;
+        $guest_name = $comment->guest_name;
+        $type_category = $comment->type_category;
+        $category_item_id = $comment->category_item_id;
+        $publish = $comment->publish;
+        $like = $comment->like;
 
+        // Create Command
+        $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
+        // Run Command
+        $this->dispatch($command);
 
-
-//        $redirect_url = $type_category.'s/'.$category_item_id;
-//        return redirect($redirect_url)
-
+        return back()
+            ->with('message', 'Комментарий отредактирован');
     }
 }
