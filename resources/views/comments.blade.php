@@ -38,17 +38,44 @@
                         <td align="center" class="comment-btn-block">
                             <a href="comments/{{ $comment->id }}/edit" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
 
+
                             {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
-                            <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-close"></em></button>
+                                <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-close"></em></button>
                             {!! Form::close() !!}
 
                             {!! Form::open(array('action' => ['CommentsController@unDelete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
-                            <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-open"></em></button>
+                                <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-open"></em></button>
                             {!! Form::close() !!}
 
+                            {{--{!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id]]) !!}--}}
+                                {{--<button type="submit" class="btn btn-danger btn-xs"><em class="fa fa-trash"></em></button>--}}
+                            {{--{!! Form::close() !!}--}}
+
                             {!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id]]) !!}
-                            <button type="submit" class="btn btn-danger btn-xs"><em class="fa fa-trash"></em></button>
+                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#destroyComment-{{ $comment->id }}"><em class="fa fa-trash"></em></button>
+                                <!-- Modal -->
+                                <div id="destroyComment-{{ $comment->id }}" class="modal fade" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title">Вы точно хотите удалить комментарий?</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Следующий комментарий будет удален из базы данных: </p>
+                                            <p>"{{ $comment->comment_text }}"</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-danger" >Да</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {!! Form::close() !!}
+
+
                         </td>
                         <td class="hidden-xs">{{ $comment->id }}</td>
                         <td>{{ $comment->comment_text }}</td>
