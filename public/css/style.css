@@ -235,14 +235,17 @@ body label {
 .copyright a {
     /*color: #03A9F4;*/
 }
+/* custom
+---------------- admin comment and article page table -------------------- */
+.admin-table-btn-block form {
+    display: inline;
+}
 /*
 ---------------- custom -------------------- */
 .radius-left-bottom {
     border-bottom-left-radius: 1.15em;
 }
-.comment-btn-block form {
-    display: inline;
-}
+
 .form-delete-userpage {
     display: inline-block;
 }

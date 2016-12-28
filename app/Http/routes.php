@@ -21,6 +21,10 @@
 //Route::resource('accessories', 'AccessoriesController');
 
 Route::resource('articles', 'ArticlesController');
+Route::post('delete_article/{id}', 'ArticlesController@delete');
+Route::post('un_delete_article/{id}', 'ArticlesController@unDelete');
+
+Route::resource('articles_admin', 'ArticlesController@articlesAdmin');
 Route::get('articles/category/{category_name}', 'ArticlesController@showCategory');
 
 

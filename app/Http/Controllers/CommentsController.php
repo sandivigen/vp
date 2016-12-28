@@ -22,8 +22,7 @@ class CommentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
 //        $comments = Comments::all()->sortByDesc('id');
         $comments = Comments::where('user_id', '>', -1)->orderBy('id', 'desc')->paginate(10);
         $comments_count = Comments::all()->count();
@@ -45,8 +44,7 @@ class CommentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         $heading = 'Добавить комментарий';
         return view('create_comment', array('heading' => $heading));
     }
@@ -57,8 +55,7 @@ class CommentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         // Get Input
         $comment_text = $request->input('comment_text');
         $type_category = $request->input('type_category');
@@ -73,8 +70,6 @@ class CommentsController extends Controller
             $user_id = Auth::user()->id;
             $guest_name = '';
         }
-
-
 
         // Create Command
         $command = new StoreCommentCommand($comment_text, $user_id, $guest_name, $type_category, $category_item_id);
@@ -105,8 +100,7 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $comment = Comments::find($id);
         $heading = 'Редактировать комментарий';
         return view('edit_comment', compact('comment', 'heading'));
@@ -119,8 +113,7 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
+    public function update(Request $request, $id) {
         // Get Input
         $comment_text = $request->input('comment_text');
         $user_id = $request->input('user_id');
@@ -146,115 +139,101 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $command = new DestroyCommentCommand($id);
 
-//        $redirect_category = Comments::find($id)->type_category;
-//        $redirect_id = Comments::find($id)->category_item_id;
-//        $redirect_url = $redirect_category.'s/'.$redirect_id;
-//        $text_message = 'Comment #'.$id.' Removed';
-
-        $this->dispatch($command);
-
-        return back()->with('message', 'Комментарий удален(совсем)');
-
-//        return \Redirect::route('comments.index')
-//            ->with('message', $text_message);
-    }
-//    public function destroyin($id)
-//    {
-//        // need comments for this method!!!
-//        $command = new DestroyCommentCommand($id);
-//        $this->dispatch($command);
-//
-//        $text_message = 'Comment #'.$id.' Removed';
-////        return \Redirect::route('articles.index')
-//        return redirect('articles/32')
-//            ->with('message', $text_message);
-//    }
-    public function delete(Request $request, $id)
-    {
-        $comment = Comments::find($id);
-
-        // Get val in base
-        $comment_text = $comment->comment_text;
-        $user_id = $comment->user_id;
-        $guest_name = $comment->guest_name;
-        $type_category = $comment->type_category;
-        $category_item_id = $comment->category_item_id;
-        $publish = 0;
-        $like = $comment->like;
-
-        // Create Command
-        $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
-
-        // Проверка является ли сообщение того пользователя, который пытается его удалить
+        // Admin check
         $auth_user_id = Auth::user()->id;
-        $uri = $request->path();
-
-        if ($user_id == $auth_user_id) {
-            // Run Command
+        if ($auth_user_id == 1) {
             $this->dispatch($command);
-
-            return back()->with('message', 'Комментарий удален');
+            return back()->with('message', 'Комментарий удален из базы данных(с правами администратора)');
         } else {
             // Записываю в лог попытку хака
             DB::table('hacking_attempt')->insert([
-                'place' => 'удаление комментария '.$uri,
+                'place' => 'удаление комментария из бд '.$uri,
                 'object' => 'комментарий номер: '.$id,
                 'who' => 'попытался пользователь: '.$auth_user_id,
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ]);
-
-            return back()->with('message', 'У вас нет прав для удаления этого комментария');
+            return back()->with('message', 'Вы не можите удалить комментарий, у вас нет прав');
         }
     }
-    public function unDelete(Request $request, $id)
-    {
+
+    /**
+     * Сделать комментарий неопубликованным
+     */
+    public function delete(Request $request, $id) {
         $comment = Comments::find($id);
-
-        // Вообще этот код выглядит избыточным, возможно как-то вносить апдейты не перечисляя все поля
-        // Можно тупо в базу, но думаю правельней через команду
-        // Get val in base
-        $comment_text = $comment->comment_text;
-        $user_id = $comment->user_id;
-        $guest_name = $comment->guest_name;
-        $type_category = $comment->type_category;
-        $category_item_id = $comment->category_item_id;
-        $publish = 1;
-        $like = $comment->like;
-
-        // Create Command
-        $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
+        $comment->publish = 0;
 
         // Проверка является ли сообщение того пользователя, который пытается его удалить
+        $user_id = $comment->user_id;
         $auth_user_id = Auth::user()->id;
         $uri = $request->path();
 
+        // Если залогениный пользователь является автором комментария
         if ($user_id == $auth_user_id) {
-            // Run Command
-            $this->dispatch($command);
-
-            return back()->with('message', 'Изменено состояние комментария: опубликован ');
+            $comment->save();
+            return back()->with('message', 'Комментарий удален');
         } else {
-            // Записываю в лог попытку хака (не уверен, что эта запись нужна)(в любом случае нужно переделывать все проверки в соотвтетствии с ролями)
-            DB::table('hacking_attempt')->insert([
-                'place' => 'сделать коммент вновь видимым '.$uri,
-                'object' => 'комментарий номер: '.$id,
-                'who' => 'попытался пользователь: '.$auth_user_id,
-                'created_at' => date("Y-m-d H:i:s"),
-                'updated_at' => date("Y-m-d H:i:s"),
-            ]);
-
-            $this->dispatch($command);
-
-            return back()->with('message', 'У вас нет прав для изменения параметров этого комментария(пока все равно работает)');
+            // Админу можно
+            if ($auth_user_id == 1) {
+                $comment->save();
+                return back()->with('message', 'Вы убрали комментарий из публикации с правами администратора');
+            } else {
+                // Записываю в лог попытку хака
+                DB::table('hacking_attempt')->insert([
+                    'place' => 'удаление комментария '.$uri,
+                    'object' => 'комментарий номер: '.$id,
+                    'who' => 'попытался пользователь: '.$auth_user_id,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s"),
+                ]);
+                return back()->with('message', 'У вас нет прав для удаления этого комментария');
+            }
         }
     }
-    public function updatePopup(Request $request, $id)
-    {
+
+    /**
+     * please write description here
+     */
+    public function unDelete(Request $request, $id) {
+        $comment = Comments::find($id);
+        $comment->publish = 1;
+
+        // Проверка является ли сообщение того пользователя, который пытается его удалить
+        $user_id = $comment->user_id;
+        $auth_user_id = Auth::user()->id;
+        $uri = $request->path();
+
+        // Если залогениный пользователь является автором комментария
+        if ($user_id == $auth_user_id) {
+            $comment->save();
+            return back()->with('message', 'Изменено состояние комментария: опубликован ');
+        } else {
+            // Админу можно
+            if ($auth_user_id == 1) {
+                $comment->save();
+                return back()->with('message', 'Вы опубликовали комментарий с правами администратора');
+            } else {
+                // Записываю в лог попытку хака
+                DB::table('hacking_attempt')->insert([
+                    'place' => 'сделать коммент вновь видимым '.$uri,
+                    'object' => 'комментарий номер: '.$id,
+                    'who' => 'попытался пользователь: '.$auth_user_id,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s"),
+                ]);
+                return back()->with('message', 'У вас нет прав для публикации этого комментария');
+            }
+        }
+    }
+
+    /**
+     * Редактирование коммента в профиле админа через модальное окно
+     */
+    public function updatePopup(Request $request, $id) {
         // Get Input
         $comment_text = $request->input('comment_text');
 

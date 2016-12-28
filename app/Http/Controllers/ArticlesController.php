@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Requests;
 use App\Http\Requests\StoreArticleRequest;
@@ -37,8 +38,7 @@ class ArticlesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
 //        $articles = Articles::all();
         $articles = Articles::orderBy('created_at', 'desc')->paginate(4);
         // $articles = Articles::orderBy('create_at', 'desc')->get(); сортировка, параметры: по какой колонке, как
@@ -67,8 +67,7 @@ class ArticlesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         $heading = 'Добавить статью';
         return view('create_article', array('heading' => $heading));
     }
@@ -79,13 +78,12 @@ class ArticlesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreArticleRequest $request)
-    {
+    public function store(StoreArticleRequest $request) {
         // validation
         $this->validate($request, [
-            'title' => 'required|min:5',
+            'title' => 'required|min:2',
 //            'start_video' => 'date',
-            'thumbnail' => 'mimes:jpeg,bmp,png,jpg|max:1024',
+            'thumbnail' => 'mimes:jpeg,bmp,png,jpg|max:2024',
         ]);
 
         // Get Input
@@ -143,8 +141,7 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         $article = Articles::find($id);
 //        $article_comment = ArticlesComments::where('article_id', '=', $id); хотел более правильно выборку сделать
         $article_comment = Comments::all()->sortByDesc('id');
@@ -160,8 +157,7 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $article = Articles::find($id);
         $heading = 'Редактировать статью';
 
@@ -188,12 +184,11 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateArticleRequest $request, $id)
-    {
+    public function update(UpdateArticleRequest $request, $id) {
         $this->validate($request, [
-            'title' => 'required|min:5',
+            'title' => 'required',
 //            'start_video' => 'date',
-            'thumbnail' => 'mimes:jpeg,bmp,png,jpg|max:1024',
+            'thumbnail' => 'mimes:jpeg,bmp,png,jpg|max:2024',
         ]);
         
         // Get Input
@@ -209,8 +204,7 @@ class ArticlesController extends Controller
 
         $current_thumbnail_filename = Articles::find($id)->thumbnail;
 
-// Check if image uploaded
-
+        // Check if image uploaded
         if ($thumbnail) {
 
             $thumbnail_filename = $thumbnail->getClientOriginalName();
@@ -246,10 +240,6 @@ class ArticlesController extends Controller
             return \Redirect::route('articles.index')
                 ->with('message', 'Статья обновлена');
         } elseif ($redirect == 'profile_articles'){
-//            $article = Articles::find($id);
-//            $user = User::find($article->user_id);
-//            $user_name = $user->name;
-//            return Redirect::action('UserController@profilePage', $user_name);
             return Redirect::action('UserController@profilePageArticles', Auth::user()->name);
         } elseif ($redirect == 'profile_page'){
             return Redirect::action('UserController@profilePage', Auth::user()->name);
@@ -260,23 +250,34 @@ class ArticlesController extends Controller
 
     }
 
-
     /**
      * Remove the specified resource from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
+    public function destroy($id) {
         $command = new DestroyArticleCommand($id);
         $this->dispatch($command);
 
-//        return \Redirect::route('articles.index')
-//            ->with('message', 'Статья удалена');
-
-        return back()->with('message', 'Статья удалена');
+        // Admin check
+        $auth_user_id = Auth::user()->id;
+        if ($auth_user_id == 1) {
+            $this->dispatch($command);
+            return back()->with('message', 'Статья удалена из базы данных(с правами администратора)');
+        } else {
+            // Записываю в лог попытку хака
+            DB::table('hacking_attempt')->insert([
+                'place' => 'удаление статьи из бд '.$uri,
+                'object' => 'статья номер: '.$id,
+                'who' => 'попытался пользователь: '.$auth_user_id,
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ]);
+            return back()->with('message', 'Вы не можите удалить статью, у вас нет прав');
+        }
     }
+
     /**
      * Category page.
      */
@@ -294,6 +295,90 @@ class ArticlesController extends Controller
             'comments' => $comments
 
         ));
+    }
+    /**
+     * Admin page with all articles and tools
+     */
+    public function articlesAdmin() {
 
+        $articles = Articles::where('user_id', '>', -1)->orderBy('id', 'desc')->paginate(10);
+        $articles_count = Articles::all()->count();
+        $amount_pages = ceil($articles_count / 10);
+        $heading = 'Админ: все статьи';
+
+        return view('articles_admin', array(
+            'articles' => $articles,
+            'heading' => $heading,
+            'amount_pages' => $amount_pages,
+        ));
+    }
+    /**
+     * Сделать статью неопубликованной
+     */
+    public function delete(Request $request, $id) {
+
+        $article = Articles::find($id);
+        $article->publish = 0;
+
+        // Проверка является ли сообщение того пользователя, который пытается его удалить
+        $user_id = $article->user_id;
+        $auth_user_id = Auth::user()->id;
+        $uri = $request->path();
+
+        if ($user_id == $auth_user_id) {
+            $article->save();
+            return back()->with('message', 'Статья удалена');
+        } else {
+            // Админу можно
+            if ($auth_user_id == 1) {
+                $article->save();
+                return back()->with('message', 'Вы убрали статью из публикации с правами администратора');
+            } else {
+                // Записываю в лог попытку хака
+                DB::table('hacking_attempt')->insert([
+                    'place' => 'удаление статьи '.$uri,
+                    'object' => 'Номер статьи: '.$id,
+                    'who' => 'попытался пользователь: '.$auth_user_id,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s"),
+                ]);
+                return back()->with('message', 'У вас нет прав для удаления этой статьи');
+            }
+        }
+    }
+    /**
+     * Сделать статью опять опубликованной
+     */
+    public function unDelete(Request $request, $id) {
+
+        $article = Articles::find($id);
+        $article->publish = 1;
+
+        // Проверка является ли сообщение того пользователя, который пытается его удалить
+        $user_id = $article->user_id;
+        $auth_user_id = Auth::user()->id;
+        $uri = $request->path();
+
+        if ($user_id == $auth_user_id) {
+            $article->save();
+            return back()->with('message', 'Статья '.$id.' опубликованна');
+        } else {
+            // Админу можно
+            if ($auth_user_id == 1) {
+                $article->save();
+                return back()->with('message', 'Вы опубликовали статью с правами администратора');
+
+            } else {
+                // Записываю в лог попытку хака
+                DB::table('hacking_attempt')->insert([
+                    'place' => 'сделать статью опубликованной '.$uri,
+                    'object' => 'Номер статьи: '.$id,
+                    'who' => 'попытался пользователь: '.$auth_user_id,
+                    'created_at' => date("Y-m-d H:i:s"),
+                    'updated_at' => date("Y-m-d H:i:s"),
+                ]);
+                return back()->with('message', 'У вас нет прав для публикации этой статьи');
+            }
+        }
     }
 }

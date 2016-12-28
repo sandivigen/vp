@@ -8,10 +8,10 @@
         <div class="panel-heading">
             <div class="row">
                 <div class="col col-xs-6">
-                    <h3 class="panel-title">Comments list</h3>
+                    <h3 class="panel-title">Articles list</h3>
                 </div>
                 <div class="col col-xs-6 text-right">
-                    <a class="btn btn-sm btn-primary btn-create" href="/comments/create"><i class="glyphicon glyphicon-plus"></i> Add comment</a>
+                    <a class="btn btn-sm btn-primary btn-create" href="/articles/create"><i class="glyphicon glyphicon-plus"></i> Add article</a>
                 </div>
             </div>
         </div>
@@ -21,11 +21,11 @@
                 <tr>
                     <th><em class="fa fa-cog"></em></th>
                     <th class="hidden-xs">ID</th>
-                    <th>Текст комментария</th>
+                    <th>Заголовок</th>
                     <th><a href="#" data-toggle="tooltip" title="ID User - кто создал комментарий">ID u</a></th>
-                    <th><a href="#" data-toggle="tooltip" title="Если отправил на авторизированный пользователь"> Guest name</a></th>
-                    <th><a href="#" data-toggle="tooltip" title="В кокой категории был создан">C_Category</a></th>
-                    <th><a href="#" data-toggle="tooltip" title="ID Item - к какой ид пришадлежит(пр. категория: статьи, ид: 102. Этот комент для 102 статьи">i</a></th>
+                    {{--<th><a href="#" data-toggle="tooltip" title="Если отправил на авторизированный пользователь"> Guest name</a></th>--}}
+                    {{--<th><a href="#" data-toggle="tooltip" title="В кокой категории был создан">C_Category</a></th>--}}
+                    {{--<th><a href="#" data-toggle="tooltip" title="ID Item - к какой ид пришадлежит(пр. категория: статьи, ид: 102. Этот комент для 102 статьи">i</a></th>--}}
                     <th><a href="#" data-toggle="tooltip" title="Public - опубликован или удален">P</a></th>
                     {{--<th><a href="#" data-toggle="tooltip" title="Like - счетчик лайков">L</a></th>--}}
                     <th>Дата создания</th>
@@ -33,24 +33,24 @@
                 </thead>
                 <tbody>
 
-                @foreach($comments as $comment)
+                @foreach($articles as $article)
                     <tr>
                         <td align="center" class="admin-table-btn-block">
-                            <a href="comments/{{ $comment->id }}/edit" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
+                            <a href="articles/{{ $article->id }}/edit" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
 
 
-                            {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
-                                <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-close"></em></button>
+                            {!! Form::open(array('action' => ['ArticlesController@delete', $article->id], 'enctype' => 'multipart/form-data')) !!}
+                            <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-close"></em></button>
                             {!! Form::close() !!}
 
-                            {!! Form::open(array('action' => ['CommentsController@unDelete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
-                                <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-open"></em></button>
+                            {!! Form::open(array('action' => ['ArticlesController@unDelete', $article->id], 'enctype' => 'multipart/form-data')) !!}
+                            <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-open"></em></button>
                             {!! Form::close() !!}
 
-                            {!! Form::open(['method' => 'DELETE', 'route' => ['comments.destroy', $comment->id]]) !!}
-                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#destroyComment-{{ $comment->id }}"><em class="fa fa-trash"></em></button>
-                                <!-- Modal -->
-                                <div id="destroyComment-{{ $comment->id }}" class="modal fade" role="dialog">
+                            {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id]]) !!}
+                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#destroyArticle-{{ $article->id }}"><em class="fa fa-trash"></em></button>
+                            <!-- Modal -->
+                            <div id="destroyArticle-{{ $article->id }}" class="modal fade" role="dialog">
                                 <div class="modal-dialog">
                                     <!-- Modal content-->
                                     <div class="modal-content">
@@ -60,7 +60,7 @@
                                         </div>
                                         <div class="modal-body">
                                             <p>Следующий комментарий будет удален из базы данных: </p>
-                                            <p>"{{ $comment->comment_text }}"</p>
+                                            <p>"{{ $article->title }}"</p>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="submit" class="btn btn-danger" >Да</button>
@@ -73,15 +73,15 @@
 
 
                         </td>
-                        <td class="hidden-xs">{{ $comment->id }}</td>
-                        <td>{{ $comment->comment_text }}</td>
-                        <td>{{ $comment->user_id }}</td>
-                        <td>{{ $comment->guest_name }}</td>
-                        <td>{{ $comment->type_category }}</td>
-                        <td>{{ $comment->category_item_id }}</td>
-                        <td>{{ $comment->publish }}</td>
-                        {{--<td>{{ $comment->like }}</td>--}}
-                        <td>{{ $comment->created_at }}</td>
+                        <td class="hidden-xs">{{ $article->id }}</td>
+                        <td>{{ $article->title }}</td>
+                        <td>{{ $article->user_id }}</td>
+                        {{--<td>{{ $article->guest_name }}</td>--}}
+                        {{--<td>{{ $article->type_category }}</td>--}}
+                        {{--<td>{{ $article->category_item_id }}</td>--}}
+                        <td>{{ $article->publish }}</td>
+                        {{--<td>{{ $article->like }}</td>--}}
+                        <td>{{ $article->created_at }}</td>
                     </tr>
                 @endforeach
 
@@ -99,7 +99,7 @@
                 </div>
                 <div class="col col-xs-8">
                     <ul class="pagination hidden-xs pull-right">
-                        {!! $comments->render() !!}
+                        {!! $articles->render() !!}
                     </ul>
                 </div>
             </div>
