@@ -46,66 +46,67 @@
                                                         <table class="table table-filter">
                                                             <tbody>
                                                             @foreach($user_articles as $article)
-                                                                {{--                                                @if($user->id == $article->user_id)--}}
-                                                                <tr data-status="pagado">
-                                                                    <td>
-                                                                        <div class="media">
-                                                                            <a href="/articles/{{ $article->id }}" class="pull-left">
-                                                                                <img src="/images/articles/{{ $article->user_id }}/thumb_{{ $article->thumbnail }}" class="media-photo">
-                                                                            </a>
-                                                                            <div class="media-body">
-                                                                                <span class="media-meta pull-right">{{ $article->created_at->format('Y-m-d') }}</span>
+                                                                @if($article->publish == 1)
+                                                                    <tr data-status="pagado">
+                                                                        <td>
+                                                                            <div class="media">
+                                                                                <a href="/articles/{{ $article->id }}" class="pull-left">
+                                                                                    <img src="/images/articles/{{ $article->user_id }}/thumb_{{ $article->thumbnail }}" class="media-photo">
+                                                                                </a>
+                                                                                <div class="media-body">
+                                                                                    <span class="media-meta pull-right">{{ $article->created_at->format('Y-m-d') }}</span>
 
-                                                                                <h4 class="title">
-                                                                                    <a href="/articles/{{ $article->id }}"> {{ $article->title }}</a>
-                                                                                    @if(!Auth::guest())
-                                                                                        @if(Auth::user()->id == $article->user_id)
-                                                                                            <a href="/articles/{{ $article->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
-                                                                                            {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id], 'class' => 'form-delete-userpage']) !!}
+                                                                                    <h4 class="title">
+                                                                                        <a href="/articles/{{ $article->id }}"> {{ $article->title }}</a>
+                                                                                        @if(!Auth::guest())
+                                                                                            @if(Auth::user()->id == $article->user_id)
+                                                                                                <a href="/articles/{{ $article->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
+                                                                                                {!! Form::open(array('action' => ['ArticlesController@delete', $article->id], 'enctype' => 'multipart/form-data', 'class' => 'form-delete-userpage')) !!}
 
-                                                                                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteArticle-{{ $article->id }}"><em class="fa fa-trash"></em></button>
+                                                                                                <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteArticle-{{ $article->id }}"><em class="fa fa-trash"></em></button>
 
-                                                                                            <!-- Modal -->
-                                                                                            <div id="deleteArticle-{{ $article->id }}" class="modal fade" role="dialog">
-                                                                                                <div class="modal-dialog">
-                                                                                                    <!-- Modal content-->
-                                                                                                    <div class="modal-content">
-                                                                                                        <div class="modal-header">
-                                                                                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                                                            <h4 class="modal-title">Удалить статью</h4>
-                                                                                                        </div>
-                                                                                                        <div class="modal-body">
-                                                                                                            <p>Вы уверены что хотите удалить статью "{{ $article->title }}"?</p>
-                                                                                                        </div>
-                                                                                                        <div class="modal-footer">
-                                                                                                            <button type="submit" class="btn btn-danger" >Да</button>
-                                                                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                                                                <!-- Modal -->
+                                                                                                <div id="deleteArticle-{{ $article->id }}" class="modal fade" role="dialog">
+                                                                                                    <div class="modal-dialog">
+                                                                                                        <!-- Modal content-->
+                                                                                                        <div class="modal-content">
+                                                                                                            <div class="modal-header">
+                                                                                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                                <h4 class="modal-title">Удалить статью</h4>
+                                                                                                            </div>
+                                                                                                            <div class="modal-body">
+                                                                                                                <p>Вы уверены что хотите удалить статью "{{ $article->title }}"?</p>
+                                                                                                            </div>
+                                                                                                            <div class="modal-footer">
+                                                                                                                <button type="submit" class="btn btn-danger" >Да</button>
+                                                                                                                <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                                                                            </div>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 </div>
-                                                                                            </div>
 
-                                                                                            {!! Form::close() !!}
+                                                                                                {!! Form::close() !!}
+
+                                                                                            @endif
                                                                                         @endif
-                                                                                    @endif
-                                                                                    @php
-                                                                                        $category_rus = ($article->category == 'News' ? 'Новости' : 'Без категории');
-                                                                                    @endphp
-                                                                                    <span class="media-meta pull-right">{{ $category_rus }}</span>
-                                                                                </h4>
-                                                                                <?php
-                                                                                    // remove text formatting tags
-                                                                                    $article_text =  strip_tags($article->text);
-                                                                                ?>
-                                                                                <p class="summary">{{ str_limit($article_text, $limit = 300, '...') }} <a href="/articles/{{ $article->id }}">Читать далее</a></p>
+                                                                                        @php
+                                                                                            $category_rus = ($article->category == 'News' ? 'Новости' : 'Без категории');
+                                                                                        @endphp
+                                                                                        <span class="media-meta pull-right">{{ $category_rus }}</span>
+                                                                                    </h4>
+                                                                                    <?php
+                                                                                        // remove text formatting tags
+                                                                                        $article_text =  strip_tags($article->text);
+                                                                                    ?>
+                                                                                    <p class="summary">{{ str_limit($article_text, $limit = 300, '...') }} <a href="/articles/{{ $article->id }}">Читать далее</a></p>
+                                                                                </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td align="center" class="comment-btn-block">
-                                                                        <br>
-                                                                    </td>
-                                                                </tr>
-                                                                {{--@endif--}}
+                                                                        </td>
+                                                                        <td align="center" class="comment-btn-block">
+                                                                            <br>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endif
                                                             @endforeach
                                                             </tbody>
                                                         </table>

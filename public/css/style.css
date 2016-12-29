@@ -480,8 +480,7 @@ body .open > .dropdown-menu-animate {
 }
 
 /*
--------------- for table comment admin page ---------------
-//  ne pomnu ot kuda eto
+-------------- admin page articles and comment for table ---------------
 ----------------------------------------------------------- */
 .panel {
     border: 1px solid #ddd;
@@ -507,7 +506,6 @@ body .open > .dropdown-menu-animate {
     color: #999;
 }
 .table-filter .media .title {
-    color: #2BBCDE;
     font-size: 14px;
     font-weight: bold;
     line-height: normal;
