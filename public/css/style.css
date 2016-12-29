@@ -924,3 +924,10 @@ body .has-error .form-control {
 .profile-page .table-filter .media-photo {
     width: 85px;
 }
+/*для страницы со всеми статьями пользователя*/
+.pagination-block-right .pagination {
+    margin: 0;
+}
+.pagination-block-left {
+    margin-top: 10px;
+}

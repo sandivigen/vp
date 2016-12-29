@@ -5,18 +5,14 @@
 {{-- if user not exists--}}
 @if($user_exists == 1)
 
-    <?php
-
-
+    @php
         // Get article list
         $article_list = array();
         foreach($articles as $key=>$value){
             $article_list[$value->id] = $value->title;
         }
-
-    Debugbar::info($user);
-    ?>
-
+        // Debugbar::info($articles[0]);
+    @endphp
 
     @section('content')
         @if(Auth::guest())
@@ -29,30 +25,13 @@
                         <div class="col-md-12">
                             <div class="panel panel-default">
                                 <div class="panel-body">
-                                    <?php
-                                    // amount of articles
-                                    $count_articles = 0;
-                                    foreach($articles as $article) {
-                                        if($user->id == $article->user_id)
-                                            $count_articles += 1;
-                                    }
-                                    ?>
                                     <div>
-                                        <h3>
-                                            {{--@if(Auth::user()->id == $user->id)--}}
-                                                {{--Мои статьи ({{ $count_articles }})--}}
-                                            {{--@else--}}
-                                                Статьи пользователя {{ $user->name }} ({{ $count_articles }})
-{{--                                                Статьи пользователя {{ $user->name }}--}}
-                                            {{--@endif--}}
-                                        </h3>
+                                        <h3>{{ $heading }}</h3>
                                     </div>
-
                                     <div class="table-container">
                                         <table class="table table-filter">
                                             <tbody>
-                                            @foreach($articles as $article)
-{{--                                                @if($user->id == $article->user_id)--}}
+                                                @foreach($articles as $article)
                                                     <tr data-status="pagado">
                                                         <td>
                                                             <div class="media">
@@ -60,26 +39,47 @@
                                                                     <img src="/images/articles/{{ $article->user_id }}/thumb_{{ $article->thumbnail }}" class="media-photo">
                                                                 </a>
                                                                 <div class="media-body">
-                                                                    {{--<span class="media-meta pull-right">Febrero 13, 2016</span>--}}
-                                                                    <span class="media-meta pull-right">{{ $article->created_at->format('d M Y') }}</span>
+                                                                    <span class="media-meta pull-right">{{ $article->created_at->format('Y-m-d') }}</span>
 
                                                                     <h4 class="title">
                                                                         <a href="/articles/{{ $article->id }}"> {{ $article->title }}</a>
                                                                         @if(!Auth::guest())
                                                                             @if(Auth::user()->id == $article->user_id)
-                                                                                <a href="/articles/{{ $article->id }}/edit?red=profile_articles" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
-                                                                                {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id], 'class' => 'form-delete-userpage']) !!}
-                                                                                <button type="submit" class="btn btn-danger btn-xs"><em class="fa fa-trash"></em></button>
+                                                                                <a href="/articles/{{ $article->id }}/edit?red=profile_page" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
+                                                                                {!! Form::open(array('action' => ['ArticlesController@delete', $article->id], 'enctype' => 'multipart/form-data', 'class' => 'form-delete-userpage')) !!}
+                                                                                    <button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#deleteArticle-{{ $article->id }}"><em class="fa fa-trash"></em></button>
+                                                                                    <!-- Modal -->
+                                                                                    <div id="deleteArticle-{{ $article->id }}" class="modal fade" role="dialog">
+                                                                                        <div class="modal-dialog">
+                                                                                            <!-- Modal content-->
+                                                                                            <div class="modal-content">
+                                                                                                <div class="modal-header">
+                                                                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                                                    <h4 class="modal-title">Удалить статью</h4>
+                                                                                                </div>
+                                                                                                <div class="modal-body">
+                                                                                                    <p>Вы уверены что хотите удалить статью "{{ $article->title }}"?</p>
+                                                                                                </div>
+                                                                                                <div class="modal-footer">
+                                                                                                    <button type="submit" class="btn btn-danger" >Да</button>
+                                                                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
                                                                                 {!! Form::close() !!}
                                                                             @endif
                                                                         @endif
-                                                                        <span class="media-meta pull-right">{{ $article->category }}</span>
+                                                                        @php
+                                                                            $category_rus = ($article->category == 'News' ? 'Новости' : 'Без категории');
+                                                                        @endphp
+                                                                        <span class="media-meta pull-right">{{ $category_rus }}</span>
                                                                     </h4>
                                                                     <?php
-                                                                        // remove text formatting tags
-                                                                        $article_text =  strip_tags($article->text);
+                                                                    // remove text formatting tags
+                                                                    $article_text =  strip_tags($article->text);
                                                                     ?>
-                                                                    <p class="summary">{{ str_limit($article_text, $limit = 300, '...') }} <a href="/articles/{{ $article->id }}">read more</a></p>
+                                                                    <p class="summary">{{ str_limit($article_text, $limit = 300, '...') }} <a href="/articles/{{ $article->id }}">Читать далее</a></p>
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -87,26 +87,32 @@
                                                             <br>
                                                         </td>
                                                     </tr>
-                                                {{--@endif--}}
-                                            @endforeach
+                                                @endforeach
                                             </tbody>
                                         </table>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <div class="row">
+                                        @php
+                                            $num_page = (!isset($_GET['page']) ? 1 : $_GET['page']); // если есть Гет параметр то его используем, если нет то это первое вхождение  и это 1-я страница
+                                        @endphp
+                                        <div class="col col-xs-4 pagination-block-left">Страница {{ $num_page }} из {{ $amount_pages }}
+                                        </div>
+                                        <div class="col col-xs-8 pagination-block-right">
+                                            <ul class="pagination hidden-xs pull-right">
+                                                {!! $articles->render() !!}
+                                            </ul>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </section>
                 @else
-                    <p>No Article Found</p>
+                    <p>Пользователь пока не написал не одной статьи</p>
                 @endif
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            {!! $articles->render() !!}
-                        </div>
-                    </div>
             </div>
-        </div>
         @endif
     @stop
 @endif

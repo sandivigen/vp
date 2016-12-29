@@ -38,21 +38,12 @@ class ArticlesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() {
-//        $articles = Articles::all();
+    public function index()
+    {
         $articles = Articles::orderBy('created_at', 'desc')->paginate(4);
-        // $articles = Articles::orderBy('create_at', 'desc')->get(); сортировка, параметры: по какой колонке, как
         $users = User::all();
         $heading = 'Все статьи';
-
-//        $comments = Comments::find();
         $comments = Comments::all();
-
-//        $comments = Comments::with('category_item_id')->get()->find(32);
-
-//        Article::with('category')->get()->find($ids);
-
-//    print_r($comments);
 
         return view('articles', array(
             'articles' => $articles,
@@ -67,7 +58,8 @@ class ArticlesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create() {
+    public function create()
+    {
         $heading = 'Добавить статью';
         return view('create_article', array('heading' => $heading));
     }
@@ -78,7 +70,8 @@ class ArticlesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreArticleRequest $request) {
+    public function store(StoreArticleRequest $request)
+    {
         // validation
         $this->validate($request, [
             'title' => 'required|min:2',
@@ -97,7 +90,6 @@ class ArticlesController extends Controller
 //        $tags = $request->input('tags');
         $tags = 'none';
 
-//        print_r($thumbnail);
 
         // Check if image uploaded
 //        if ($thumbnail) {
@@ -141,7 +133,8 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         $article = Articles::find($id);
 //        $article_comment = ArticlesComments::where('article_id', '=', $id); хотел более правильно выборку сделать
         $article_comment = Comments::all()->sortByDesc('id');
@@ -157,7 +150,8 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         $article = Articles::find($id);
         $heading = 'Редактировать статью';
 
@@ -176,7 +170,6 @@ class ArticlesController extends Controller
         return view('edit_article', compact('article', 'heading', 'redirect'));
     }
 
-    
     /**
      * Update the specified resource in storage.
      *
@@ -184,7 +177,8 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateArticleRequest $request, $id) {
+    public function update(UpdateArticleRequest $request, $id)
+    {
         $this->validate($request, [
             'title' => 'required',
 //            'start_video' => 'date',
@@ -247,7 +241,6 @@ class ArticlesController extends Controller
             return redirect()->route('articles.show', $id)
                 ->with('message', 'Статья обновлена');
         }
-
     }
 
     /**
@@ -256,7 +249,8 @@ class ArticlesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $command = new DestroyArticleCommand($id);
         $this->dispatch($command);
 
@@ -279,9 +273,10 @@ class ArticlesController extends Controller
     }
 
     /**
-     * Category page.
+     * Category articles page.
      */
-    public function showCategory($category_name){
+    public function showCategory($category_name)
+    {
         $articles = Articles::where('category', '=', $category_name)->paginate(3);
         $users = User::all();
         $heading = 'Список статей категории - ' .  $category_name;
@@ -296,11 +291,12 @@ class ArticlesController extends Controller
 
         ));
     }
+
     /**
      * Admin page with all articles and tools
      */
-    public function articlesAdmin() {
-
+    public function articlesAdmin()
+    {
         $articles = Articles::where('user_id', '>', -1)->orderBy('id', 'desc')->paginate(10);
         $articles_count = Articles::all()->count();
         $amount_pages = ceil($articles_count / 10);
@@ -312,10 +308,12 @@ class ArticlesController extends Controller
             'amount_pages' => $amount_pages,
         ));
     }
+
     /**
      * Сделать статью неопубликованной
      */
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id)
+    {
 
         $article = Articles::find($id);
         $article->publish = 0;
@@ -346,10 +344,12 @@ class ArticlesController extends Controller
             }
         }
     }
+
     /**
      * Сделать статью опять опубликованной
      */
-    public function unDelete(Request $request, $id) {
+    public function unDelete(Request $request, $id)
+    {
 
         $article = Articles::find($id);
         $article->publish = 1;

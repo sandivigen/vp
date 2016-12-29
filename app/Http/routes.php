@@ -20,25 +20,24 @@
 
 //Route::resource('accessories', 'AccessoriesController');
 
-Route::resource('articles', 'ArticlesController');
-Route::post('delete_article/{id}', 'ArticlesController@delete');
-Route::post('un_delete_article/{id}', 'ArticlesController@unDelete');
+Route::get('/', 'HomeController@index');
 
-Route::resource('articles_admin', 'ArticlesController@articlesAdmin');
-Route::get('articles/category/{category_name}', 'ArticlesController@showCategory');
-
+Route::resource('articles', 'ArticlesController');                                  // Main
+Route::resource('articles_admin', 'ArticlesController@articlesAdmin');              // for Admin
+Route::get('articles/category/{category_name}', 'ArticlesController@showCategory'); // category Page
+Route::get('user/{user_name}/articles', 'UserController@profilePageArticles');      // profile Page
+Route::post('delete_article/{id}', 'ArticlesController@delete');                    // UnPublish
+Route::post('un_delete_article/{id}', 'ArticlesController@unDelete');               // Publish
 
 Route::resource('comments', 'CommentsController');
+Route::get('user/{user_name}/comments', 'UserController@profilePageComments');
 Route::post('delete_comment/{id}', 'CommentsController@delete');
 Route::post('un_delete_comment/{id}', 'CommentsController@unDelete');
 Route::post('update_comment/{id}', 'CommentsController@updatePopup');
 
-
 Route::get('profile', 'UserController@profile');
-Route::post('profile', 'UserController@update_avatar');
-Route::get('user/{user_name}/comments', 'UserController@profilePageComments');
-Route::get('user/{user_name}/articles', 'UserController@profilePageArticles');
 Route::get('user/{user_name}', 'UserController@profilePage');
+Route::post('profile', 'UserController@update_avatar');
 
 
 //Route::get('/contact', function () {
@@ -47,7 +46,6 @@ Route::get('user/{user_name}', 'UserController@profilePage');
 
 Route::auth();
 
-Route::get('/', 'HomeController@index');
 //Route::get('/', function () {
 //    return view('welcome');
 //});

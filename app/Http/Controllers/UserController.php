@@ -18,11 +18,20 @@ use Image;
 
 class UserController extends Controller
 {
-    public function profile() {
+    /**
+     * description
+     */
+    public function profile()
+    {
         $heading = 'Мой профиль 1';
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
-    public function update_avatar(Request $request) {
+
+    /**
+     * description
+     */
+    public function update_avatar(Request $request)
+    {
         // Handle the user upload of avatar
         $heading = 'Мой профиль';
         $avatar = $request->file('avatar');
@@ -71,9 +80,11 @@ class UserController extends Controller
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
 
-    // Страница содержащая список статей данного пользователя
-    public function profilePageArticles($user_name) {
-
+    /**
+     * Страница содержащая список всех статей данного пользователя
+     */
+    public function profilePageArticles($user_name)
+    {
         $users = User::all();
 
         // get user id
@@ -82,7 +93,7 @@ class UserController extends Controller
                 $user_id = $user->id;
         }
 
-        $articles = Articles::where('user_id', '=', $user_id)->paginate(3);
+        $articles = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->orderBy('id', 'desc')->paginate(2);
 
         // Check if the user exists(существует)
         $user_exists = 0;
@@ -91,6 +102,10 @@ class UserController extends Controller
                 $user_exists = 1;
         }
 
+        // счетчик для пагинации
+        $articles_count = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->count();
+        $amount_pages = ceil($articles_count / 2);
+            
         if ($user_exists == 1) {
 
             // получаем ид юзера из его имени
@@ -100,25 +115,28 @@ class UserController extends Controller
             }
             $user = User::find($user_id);
 
-            $heading = 'Профиль пользователя: ' . $user_name;
-
+            $heading = 'Все статьи пользователя: ' . $user_name;
 
             return view('profile_page_articles', array(
                 'heading' => $heading,
                 'articles' => $articles,
                 'user_exists' => 1,
                 'user' => $user,
+                'amount_pages' => $amount_pages,
             ));
         } else {
-
             return view('profile_page_articles', array(
                 'heading' => 'Пользователь ' . $user_name . ' не существует',
                 'user_exists' => 0,
             ));
         }
     }
-    public function profilePageComments($user_name) {
 
+    /**
+     * Страница содержащая список всех комментов данного пользователя
+     */
+    public function profilePageComments($user_name)
+    {
         $users = User::all();
 
         // get user id
@@ -168,9 +186,11 @@ class UserController extends Controller
         }
     }
 
-    // страница для просмотра разными пользователями
-    public function profilePage($user_name) {
-
+    /**
+     * страница для просмотра разными пользователями c данными, комментами и статьями
+     */
+    public function profilePage($user_name)
+    {
         $users = User::all();
 
         // get user id
