@@ -40,7 +40,9 @@ class ArticlesController extends Controller
      */
     public function index()
     {
-        $articles = Articles::orderBy('created_at', 'desc')->paginate(4);
+//        $articles = Articles::orderBy('created_at', 'desc')->paginate(2);
+        $articles = Articles::where('user_id', '>', -1)->where('publish', '=', 1)->orderBy('id', 'desc')->paginate(2);
+
         $users = User::all();
         $heading = 'Все статьи';
         $comments = Comments::all();

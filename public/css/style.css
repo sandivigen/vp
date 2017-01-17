@@ -931,3 +931,7 @@ body .has-error .form-control {
 .pagination-block-left {
     margin-top: 10px;
 }
+/*внутри статьи делаю отступ для кнопки удалить*/
+.article-delete-btn {
+    margin-right: 10px;
+}
