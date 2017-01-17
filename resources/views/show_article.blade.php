@@ -70,14 +70,33 @@
                             @if(!Auth::guest())
                                 @if(Auth::user()->id == $article->user_id)
 
+                                    <a href="/articles/{{ $article->id }}/edit" class="btn btn-info pull-right" role="button"><i class="fa fa-edit"></i> Редактировать</a>
 
-                                            <a class="edit-item" href="/articles/{{ $article->id }}/edit">
-                                                <i class="fa fa-edit"></i>
-                                            </a>
-                                            {!! Form::open(['method' => 'DELETE', 'route' => ['articles.destroy', $article->id]]) !!}
-{{--                                            {{ Form::button('<i class="icon-trash"></i>', ['class' => 'btn', 'role' => 'button', 'type' => 'submit']) }}--}}
-                                            {!! Form::close() !!}
+                                    {!! Form::open(array('action' => ['ArticlesController@delete', $article->id], 'enctype' => 'multipart/form-data', 'class' => 'form-delete-userpage pull-right')) !!}
 
+                                    <button type="button" class="btn btn-danger pull-right" data-toggle="modal" data-target="#deleteArticle-{{ $article->id }}"><em class="fa fa-trash"></em> Удалить статью</button>
+
+                                    <!-- Modal -->
+                                    <div id="deleteArticle-{{ $article->id }}" class="modal fade" role="dialog">
+                                        <div class="modal-dialog">
+                                            <!-- Modal content-->
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                    <h4 class="modal-title">Удалить статью</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Вы уверены что хотите удалить статью "{{ $article->title }}"?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-danger" >Да</button>
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">Нет</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {!! Form::close() !!}
 
                                 @endif
                             @endif
