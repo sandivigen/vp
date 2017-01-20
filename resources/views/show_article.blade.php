@@ -129,6 +129,16 @@
                                         <span>Пользователь</span>
                                     </div>
                                 </li>
+                                <li>
+                                    <div class="">
+                                        <span>Комментарии</span>
+                                        (<a href="/user/{{ $user[$article->user_id]['name'] }}/comments">{{ $comments_count }}</a>)<br>
+                                    </div>
+                                    <div class="">
+                                        <span>Статьи</span>
+                                        (<a href="/user/{{ $user[$article->user_id]['name'] }}/articles">{{ $articles_count }}</a>)<br>
+                                    </div>
+                                </li>
                             </ul>
                         </div>
                     </li>

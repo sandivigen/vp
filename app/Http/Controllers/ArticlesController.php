@@ -143,7 +143,11 @@ class ArticlesController extends Controller
         $users = User::all();
         $heading = 'Controller - Show article';
 
-        return view('show_article', compact('article', 'article_comment', 'users', 'heading'));
+        // Счетчики комментариев и статей для сайтбара
+        $articles_count = Articles::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
+        $comments_count = Comments::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
+
+        return view('show_article', compact('article', 'article_comment', 'users', 'heading', 'articles_count', 'comments_count'));
     }
 
     /**
