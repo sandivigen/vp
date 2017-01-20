@@ -45,6 +45,30 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        // Custom render
+        if ($this->isHttpException($e)) {
+            $statusCode = $e->getStatusCode();
+
+//            dd($e->getMessage());
+
+            if ($e->getMessage() == "show article") {
+                $data_error = [
+                    'message' => 'Данной статьи не сущечтвует',
+                    'recommended' => 'show article',
+                ];
+            } else {
+                $data_error = [
+                    'message' => 'Данной страницы не сущечтвует',
+                    'recommended' => 'show 404',
+                ];
+            }
+
+            switch ($statusCode) {
+                case '404' :
+                    return response()->view('404', $data_error);
+            }
+        }
+
         return parent::render($request, $e);
     }
 }

@@ -138,16 +138,20 @@ class ArticlesController extends Controller
     public function show($id)
     {
         $article = Articles::find($id);
+
+        if (isset($article)) {
 //        $article_comment = ArticlesComments::where('article_id', '=', $id); хотел более правильно выборку сделать
-        $article_comment = Comments::all()->sortByDesc('id');
-        $users = User::all();
-        $heading = 'Controller - Show article';
+            $article_comment = Comments::all()->sortByDesc('id');
+            $users = User::all();
+            $heading = 'Controller - Show article';
 
-        // Счетчики комментариев и статей для сайтбара
-        $articles_count = Articles::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
-        $comments_count = Comments::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
+            // Счетчики комментариев и статей для сайтбара
+            $articles_count = Articles::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
+            $comments_count = Comments::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
 
-        return view('show_article', compact('article', 'article_comment', 'users', 'heading', 'articles_count', 'comments_count'));
+            return view('show_article', compact('article', 'article_comment', 'users', 'heading', 'articles_count', 'comments_count'));
+        }
+        abort(404, 'show article');
     }
 
     /**
