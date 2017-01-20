@@ -110,7 +110,7 @@
                                                             @endforeach
                                                             </tbody>
                                                         </table>
-                                                        <a href="/user/{{ $user->name }}/articles" class="btn btn-primary">Посмотреть все статьи</a>
+                                                        <a href="/user/{{ $user->name }}/articles" class="btn btn-primary">Посмотреть все статьи  ({{ $articles_count }})</a>
 
                                                     </div>
                                                 </div>
@@ -217,7 +217,7 @@
                                                             @endforeach
                                                             </tbody>
                                                         </table>
-                                                        <a href="/user/{{ $user->name }}/comments" class="btn btn-primary">Все комментарии пользователя</a>
+                                                        <a href="/user/{{ $user->name }}/comments" class="btn btn-primary">Все комментарии пользователя ({{ $comments_count }})</a>
 
                                                     </div>
                                                 </div>

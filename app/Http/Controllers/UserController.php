@@ -94,6 +94,7 @@ class UserController extends Controller
         }
 
         $articles = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->orderBy('id', 'desc')->paginate(2);
+//        $articles = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->count();
 
         // Check if the user exists(существует)
         $user_exists = 0;
@@ -123,6 +124,7 @@ class UserController extends Controller
                 'user_exists' => 1,
                 'user' => $user,
                 'amount_pages' => $amount_pages,
+                'articles_count' => $articles_count,
             ));
         } else {
             return view('profile_page_articles', array(
@@ -145,10 +147,9 @@ class UserController extends Controller
                 $user_id = $user->id;
         }
 
-//        $articles = Articles::where('user_id', '=', $user_id)->paginate(3);
+        $comments = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->paginate(3);
+        $comments_count = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->count();
 
-//        $comments = Comments::all()->sortByDesc('id');
-        $comments = Comments::where('user_id', '=', $user_id)->paginate(3);
         $articles = Articles::all();
         $users = User::all();
 
@@ -176,6 +177,8 @@ class UserController extends Controller
                 'comments' => $comments,
                 'user_exists' => 1,
                 'user' => $user,
+                'comments_count' => $comments_count,
+
             ));
         } else {
 
@@ -200,7 +203,7 @@ class UserController extends Controller
         }
 
         $user_comments = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->get()->sortByDesc('id')->take(10);
-        $user_articles = Articles::where('user_id', '=', $user_id)->get()->sortByDesc('id')->take(3);
+        $user_articles = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->get()->sortByDesc('id')->take(3);
         $articles = Articles::all(); // выбмраем все статьи для определения заголовка к какой статье пренадлежит комментарий
         $articles_count = Articles::where('user_id', '=', $user_id)->count(); // получаем сумму всех статей пользователя
         $comments_count = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->count(); // получаем сумму всех сообщений пользователя, из них выбираем опубликванные

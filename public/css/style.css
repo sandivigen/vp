@@ -408,7 +408,8 @@ body h2 {
     margin-left: 5px;
 }
 #comment_update_submit, #comment_text {
-    display: none;
+    /*не знаю, что я скрывал, но это отключило тексареа в редактировании статьи в модальном окне в админке профилья*/
+    /*display: none;*/
 }
 #comment_input_submit {
     margin-top: 5px;

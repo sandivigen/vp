@@ -26,7 +26,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-body">
                                     <div>
-                                        <h3>{{ $heading }}</h3>
+                                        <h3>{{ $heading }} ({{ $articles_count }})</h3>
                                     </div>
                                     <div class="table-container">
                                         <table class="table table-filter">
