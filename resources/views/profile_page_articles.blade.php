@@ -36,7 +36,7 @@
                                                         <td>
                                                             <div class="media">
                                                                 <a href="/articles/{{ $article->id }}" class="pull-left">
-                                                                    <img src="/images/articles/{{ $article->user_id }}/thumb_{{ $article->thumbnail }}" class="media-photo">
+                                                                    <img src="/uploads/articles/{{ $article->id }}/{{ $article->thumbnail }}" class="media-photo">
                                                                 </a>
                                                                 <div class="media-body">
                                                                     <span class="media-meta pull-right">{{ $article->created_at->format('Y-m-d') }}</span>
