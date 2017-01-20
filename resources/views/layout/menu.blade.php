@@ -95,6 +95,7 @@
                                         <li><a href="{{ url('/profile') }}"><i class="glyphicon glyphicon-cog"></i> Редактировать профиль</a></li>
                                         <li><a href="/articles_admin">Админ: статьи</a></li>
                                         <li><a href="/comments"><span>Админ: комменты</span></a></li>
+                                        <li><a href="/admin_table_users"><span>Админ: пользователи</span></a></li>
                                         <li><a href="{{ url('/logout') }}">Выйти</a></li>
                                     </ul>
                                 </li>
