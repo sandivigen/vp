@@ -60,7 +60,7 @@
                                         <i class="fa fa-video-camera post-icon"></i>
                                         <h2>{{ $article->title }}</h2>
                                         <ul class="post-meta">
-                                            <li class="meta-user"><i class="fa fa-user"></i><a href="/user/{{ $user[$article->user_id]['name'] }}/comments">{{ $user[$article->user_id]['name'] }}</a></li>
+                                            <li class="meta-user"><i class="fa fa-user"></i><a href="/user/{{ $user[$article->user_id]['name'] }}">{{ $user[$article->user_id]['name'] }}</a></li>
                                             <li class="meta-date"><i class="fa fa-clock-o"></i>{{ $article->created_at->format('Y-m-d') }}</li>
                                             <li></li>
                                             <li class="meta-cat"><i class="fa fa-folder-open"></i><a href="/articles/category/{{ $article->category }}" rel="category tag">{{ $article->category }}</a></li>
