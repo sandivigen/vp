@@ -87,13 +87,14 @@
                                         <span class="username">Hi, {{ Auth::user()->name }}</span>
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-animate drop-menu-right">
-                                        <li><a href="/articles/create">Добавить статью</a></li>
+                                        <li><a href="/articles/create"><i class="glyphicon glyphicon-plus"></i> Добавить статью</a></li>
                                         {{--<li><a href="#"><i class="fa fa-star"></i>Аксессуар</a></li>--}}
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}/comments">Список комментариев</a></li>
-                                        <li><a href="/comments"><span>Все комментарии</span></a></li>
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}/articles">Список статей</a></li>
-                                        <li><a href="{{ url('/user', Auth::user()->name) }}">Мой профиль</a></li>
-                                        <li><a href="{{ url('/profile') }}">Редактировать профиль</a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}"><i class="glyphicon glyphicon-user"></i> Мой профиль</a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}/comments"><i class="glyphicon glyphicon-list"></i> Список комментариев</a></li>
+                                        <li><a href="{{ url('/user', Auth::user()->name) }}/articles"><i class="glyphicon glyphicon-list"></i> Список статей</a></li>
+                                        <li><a href="{{ url('/profile') }}"><i class="glyphicon glyphicon-cog"></i> Редактировать профиль</a></li>
+                                        <li><a href="/articles_admin">Админ: статьи</a></li>
+                                        <li><a href="/comments"><span>Админ: комменты</span></a></li>
                                         <li><a href="{{ url('/logout') }}">Выйти</a></li>
                                     </ul>
                                 </li>
