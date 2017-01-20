@@ -936,3 +936,8 @@ body .has-error .form-control {
 .article-delete-btn {
     margin-right: 10px;
 }
+/*для страницы админ таблица юзеров, чтобы тип поля намбер был меньшьше*/
+.admin-table-user-page input.form-control  {
+    width: 50px;
+    float: left;
+}

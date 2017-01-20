@@ -42,6 +42,8 @@ Route::post('delete_comment/{id}', 'CommentsController@delete');
 Route::post('un_delete_comment/{id}', 'CommentsController@unDelete');
 Route::post('update_comment/{id}', 'CommentsController@updatePopup');
 
+Route::resource('admin_table_users', 'UserController@adminTableUsers');              // Админ таблица с пользователями
+Route::post('admin_table_users', 'UserController@adminTableUsersUpdate');              // Изменение роли в админ таблице с пользователями
 Route::get('profile', 'UserController@profile');
 Route::get('user/{user_name}', 'UserController@profilePage');
 Route::post('profile', 'UserController@update_avatar');

@@ -23,7 +23,7 @@ class UserController extends Controller
      */
     public function profile()
     {
-        $heading = 'Мой профиль 1';
+        $heading = 'Редактировать профиль';
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
 
@@ -240,4 +240,36 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * Администраторская страница с перечнем всех пользователей
+     */
+    public function adminTableUsers()
+    {
+        $users = User::all();
+
+            return view('admin_table_users', array(
+                'heading' => 'Админ таблица пользователей',
+                'users' => $users,
+//                'user_exists' => 0,
+            ));
+//        }
+    }
+    /**
+     * Администраторская страница с перечнем всех пользователей
+     */
+    public function adminTableUsersUpdate(Request $request)
+    {
+        // Защита если кто-то попробует поставить роль админа
+        if ($request->input('role') == 2 or $request->input('role') == 3 or $request->input('role') == 4) {
+            $user = User::find($request->input('user_id'));     // выбираем из базы пользователя
+            $user->role = $request->input('role');              // меняем ему роль
+            $user->save();                                      // сохраняем новую роль
+            return back()->with('message', 'Роль пользователя '.$request->input('user_id').' изменена на '. $request->input('role'));
+        } else {
+            return back()->with('message', 'Вы не можите установить эту роль');
+        }
+    }
 }
+
+
+
