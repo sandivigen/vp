@@ -20,6 +20,13 @@
 
 //Route::resource('accessories', 'AccessoriesController');
 
+
+
+
+// Времменно закрыл регистрацию, нужны куки
+//Route::auth();
+
+
 Route::get('/', 'HomeController@index');
 
 Route::resource('articles', 'ArticlesController');                                  // Main
@@ -40,11 +47,18 @@ Route::get('user/{user_name}', 'UserController@profilePage');
 Route::post('profile', 'UserController@update_avatar');
 
 
+
+
+
+
+
+
+
+
 //Route::get('/contact', function () {
 //    return view('contact');
 //});
 
-Route::auth();
 
 //Route::get('/', function () {
 //    return view('welcome');
