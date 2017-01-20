@@ -12,8 +12,6 @@ use App\Http\Requests\UpdateArticleRequest;
 use App\Commands\StoreArticleCommand;
 use App\Commands\UpdateArticleCommand;
 use App\Commands\DestroyArticleCommand;
-//use App\Commands\StoreArticleCommentCommand;
-//use App\Commands\DestroyArticleCommentCommand;
 
 use App\Articles;
 use App\User;
