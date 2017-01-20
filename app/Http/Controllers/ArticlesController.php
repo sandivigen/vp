@@ -26,6 +26,8 @@ use App\Comments;
 //use Intervention\Image\Image;
 use Intervention\Image\Facades\Image;
 
+use File;
+
 use Auth;
 
 // Для редиректа на страницу профиля
@@ -186,7 +188,8 @@ class ArticlesController extends Controller
 //            'start_video' => 'date',
             'thumbnail' => 'mimes:jpeg,bmp,png,jpg|max:2024',
         ]);
-        
+
+
         // Get Input
         $title = $request->input('title');
         $category = $request->input('category');
@@ -200,32 +203,48 @@ class ArticlesController extends Controller
 
         $current_thumbnail_filename = Articles::find($id)->thumbnail;
 
+
         // Check if image uploaded
+
+        // если миниатюра существует, а она всегда существует, проверку можно удалить
         if ($thumbnail) {
 
-            $thumbnail_filename = $thumbnail->getClientOriginalName();
+            $user_id = Auth::user()->id;                                            // получаем id залогиненого пользователя
+            $article = Articles::find($id);                                                  // Получаем массив статьи
 
-            $user_id = Auth::user()->id;
-            $path_thumbnail = 'images/articles/'.$user_id;
-            $path_thumbnail_original_file = $path_thumbnail . '/' . $thumbnail_filename;
-            $path_thumbnail_resize_file = $path_thumbnail . '/thumb_' . $thumbnail_filename;
 
-            $thumbnail->move(public_path($path_thumbnail), $thumbnail_filename);
+            $thumbnail_original_filename = $thumbnail->getClientOriginalName();           // Получим имя картинки из объекта загружанного через форму, это нужно было для того чтобы оставить оригинальное название файла
+            $ext_info = pathinfo($thumbnail_original_filename);                        // получаем масив данных файла(имя, разшерение..)
+            $file_extension = ".".$ext_info['extension'];                           // получаем расшерение файла
 
-            $img = Image::make($path_thumbnail_original_file);
+            $thumbnail_filename = 'art-thumbnail-u'.$user_id.'a'.$id.'e'.time().$file_extension;  // создаем уникальное имя файла
+            $path_thumbnail = 'uploads/articles/'.$id;                                      // создаем путь к папке, где хранятся аватарки
+            $path_thumbnail_file = $path_thumbnail .'/'. $thumbnail_filename;                    // Создаем путь для оптимизированного файла
 
+//            print_r($file_extension);
+//            echo '<br>';
+//            print_r($thumbnail_filename);
+
+            $thumbnail->move(public_path($path_thumbnail), $thumbnail_filename);             // берет картинку из формы и делает копию на сервере
+            $img = Image::make($path_thumbnail_file);                                  // Добавляет объект от оригинальной фотографии, для обработки
+
+            // Обрезаем по меньшей стороне
             $width = 500;
             $height = 500;
-            $img->width() > $img->height() ? $width=null : $height=null;
-            $img->resize($width, $height, function ($constraint) {
-                $constraint->aspectRatio();
+            $img->width() > $img->height() ? $width=null : $height=null;            // Большая сторона будет обрезатся
+            $img->resize($width, $height, function ($constraint) {                  // Обрезаем более широкую или узкую сторону
+                $constraint->aspectRatio();                                         // образаем пропорционально от центра
             });
-            $img->fit(500);
-            $img->save($path_thumbnail_resize_file);
+            $img->fit(500);                                                         // Обрезаем по меньшей стороне
+            $img->save($path_thumbnail_file);                                          // сохраняем оптимизированную картинку, ПЕРЕЗАПИСЫВАЯ оригинальную картинку
 
-        } else {
-            $thumbnail_filename = $current_thumbnail_filename;
+            $old_thumbnail_filename = $article->thumbnail;                                   // Название предыдущего файла картинки
+            if ($thumbnail != 'no_article.jpg') {                          // Если название не менялось, стоит картинка по умолчанию, то ее трогать не будем
+                $old_path_thumbnail_file = $path_thumbnail . '/' . $old_thumbnail_filename;  // путь к старому файлу
+                File::delete($old_path_thumbnail_file);                                // удаляем старый файл
+            }
         }
+
 
         // Update Command
         $command = new UpdateArticleCommand($id, $title, $category, $thumbnail_filename, $text, $video_id, $start_video, $tags);

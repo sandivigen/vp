@@ -42,7 +42,7 @@
                         {{--<div class="col-sm-4 padding-none">--}}
                         <div class="post-image">
                             <a href="/articles/{{ $article->id }}" class="post-thumbnail">
-                                <img alt="" src="/images/articles/{{ $article->user_id }}/thumb_{{ $article->thumbnail }}">
+                                <img alt="" src="/uploads/articles/{{ $article->id }}/{{ $article->thumbnail }}">
                             </a>
                         </div>
                         {{--</div>--}}

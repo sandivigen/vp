@@ -116,7 +116,7 @@
             removeTitle: 'Cancel or reset changes',
             elErrorContainer: '#block-errors',
             msgErrorClass: 'alert alert-block alert-danger',
-            initialPreview: '<img src="/images/articles/{{ $article->user_id }}/thumb_{{ $article->thumbnail }}" class="file-preview-image" title="{{ $article->thumbnail }}" alt="{{ $article->thumbnail }}" style="width:100%;height:auto;border-top-right-radius: 1.2em;">',
+            initialPreview: '<img src="/uploads/articles/{{ $article->id }}/{{ $article->thumbnail }}" class="file-preview-image" title="{{ $article->thumbnail }}" alt="{{ $article->thumbnail }}" style="width:100%;height:auto;border-top-right-radius: 1.2em;">',
             initialPreviewConfig: [
                 {caption: "{{ $article->thumbnail }}"},
                ],
