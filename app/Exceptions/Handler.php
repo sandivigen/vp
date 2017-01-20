@@ -56,17 +56,44 @@ class Handler extends ExceptionHandler
                     'message' => 'Данной статьи не сущечтвует',
                     'recommended' => 'show article',
                 ];
-            } else {
-                $data_error = [
-                    'message' => 'Данной страницы не сущечтвует',
-                    'recommended' => 'show 404',
-                ];
+
+                switch ($statusCode) {
+                    case '404' :
+                        return response()->view('404', $data_error);
+                }
             }
 
-            switch ($statusCode) {
-                case '404' :
-                    return response()->view('404', $data_error);
+            if ($e->getMessage() == "edit article") {
+                $data_error = [
+                    'message' => 'Страница которую вы хотите редактировать не существует. Проверте адресс ссылки.',
+                    'recommended' => 'show 404',
+                ];
+
+                switch ($statusCode) {
+                    case '404' :
+                        return response()->view('404', $data_error);
+                }
             }
+
+            if ($e->getMessage() == "show category article") {
+                $data_error = [
+                    'message' => 'Данной категории статей не существует, проверте ваш запрос',
+                    'recommended' => 'show 404',
+                ];
+
+                switch ($statusCode) {
+                    case '404' :
+                        return response()->view('404', $data_error);
+                }
+            }
+//            else {
+//                $data_error = [
+//                    'message' => 'Данной страницы не сущечтвует',
+//                    'recommended' => 'show 404',
+//                ];
+//            }
+
+
         }
 
         return parent::render($request, $e);

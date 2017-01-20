@@ -163,21 +163,27 @@ class ArticlesController extends Controller
     public function edit($id)
     {
         $article = Articles::find($id);
-        $heading = 'Редактировать статью';
 
-        if(isset($_GET['red'])) { // если у ГЕТ есть праваметр red, то будем делать редирект
-            if ($_GET['red'] == 'list') {
-                $redirect = 'article_list';
-            } if ($_GET['red'] == 'profile_page') {
-                $redirect = 'profile_page';
-            } elseif ($_GET['red'] == 'profile_articles') {
-                $redirect = 'profile_articles';
+        $article = Articles::find($id);
+
+        if (isset($article)) {
+            $heading = 'Редактировать статью';
+
+            if(isset($_GET['red'])) { // если у ГЕТ есть праваметр red, то будем делать редирект
+                if ($_GET['red'] == 'list') {
+                    $redirect = 'article_list';
+                } if ($_GET['red'] == 'profile_page') {
+                    $redirect = 'profile_page';
+                } elseif ($_GET['red'] == 'profile_articles') {
+                    $redirect = 'profile_articles';
+                }
+            } else { // иначе будем редеректить на страницу просмотра статьи
+                $redirect = 'article_show';
             }
-        } else { // иначе будем редеректить на страницу просмотра статьи
-            $redirect = 'article_show';
-        }
 
-        return view('edit_article', compact('article', 'heading', 'redirect'));
+            return view('edit_article', compact('article', 'heading', 'redirect'));
+        }
+        abort(404, 'edit article');
     }
 
     /**
@@ -289,7 +295,7 @@ class ArticlesController extends Controller
         } else {
             // Записываю в лог попытку хака
             DB::table('hacking_attempt')->insert([
-                'place' => 'удаление статьи из бд '.$uri,
+//                'place' => 'удаление статьи из бд '.$uri,
                 'object' => 'статья номер: '.$id,
                 'who' => 'попытался пользователь: '.$auth_user_id,
                 'created_at' => date("Y-m-d H:i:s"),
@@ -304,19 +310,21 @@ class ArticlesController extends Controller
      */
     public function showCategory($category_name)
     {
-        $articles = Articles::where('category', '=', $category_name)->paginate(3);
-        $users = User::all();
-        $heading = 'Список статей категории - ' .  $category_name;
-        $comments = Comments::all();
+        if ($category_name == 'News' or $category_name == 'None') {
+            $articles = Articles::where('category', '=', $category_name)->paginate(3);
+            $users = User::all();
+            $heading = 'Список статей категории - ' .  $category_name;
+            $comments = Comments::all();
 
-        return view('articles_category', array(
-            'articles' => $articles,
-            'heading' => $heading,
-            'users' => $users,
-            'category' => $category_name,
-            'comments' => $comments
-
-        ));
+            return view('articles_category', array(
+                'articles' => $articles,
+                'heading' => $heading,
+                'users' => $users,
+                'category' => $category_name,
+                'comments' => $comments
+            ));
+        }
+        abort(404, 'show category article');
     }
 
     /**
@@ -345,9 +353,10 @@ class ArticlesController extends Controller
         $article = Articles::find($id);
         $article->publish = 0;
 
-        // Проверка является ли сообщение того пользователя, который пытается его удалить
+        // Проверка является ли статья того пользователя, который пытается ее удалить
         $user_id = $article->user_id;
         $auth_user_id = Auth::user()->id;
+        $auth_user_role = Auth::user()->role;
         $uri = $request->path();
 
         if ($user_id == $auth_user_id) {
@@ -355,11 +364,13 @@ class ArticlesController extends Controller
             return back()->with('message', 'Статья удалена');
         } else {
             // Админу можно
-            if ($auth_user_id == 1) {
+            if ($auth_user_role == 1) {
                 $article->save();
-                return back()->with('message', 'Вы убрали статью из публикации с правами администратора');
+                return back()->with('message', 'Вы убрали статью из публикации, используя права администратора');
             } else {
                 // Записываю в лог попытку хака
+                if (!$auth_user_id)
+                    $auth_user_id = 'не авторизированный';
                 DB::table('hacking_attempt')->insert([
                     'place' => 'удаление статьи '.$uri,
                     'object' => 'Номер статьи: '.$id,
@@ -384,6 +395,7 @@ class ArticlesController extends Controller
         // Проверка является ли сообщение того пользователя, который пытается его удалить
         $user_id = $article->user_id;
         $auth_user_id = Auth::user()->id;
+        $auth_user_role = Auth::user()->role;
         $uri = $request->path();
 
         if ($user_id == $auth_user_id) {
@@ -391,12 +403,14 @@ class ArticlesController extends Controller
             return back()->with('message', 'Статья '.$id.' опубликованна');
         } else {
             // Админу можно
-            if ($auth_user_id == 1) {
+            if ($auth_user_role == 1) {
                 $article->save();
-                return back()->with('message', 'Вы опубликовали статью с правами администратора');
+                return back()->with('message', 'Вы сделали статью опубликованной, используя права администратора');
 
             } else {
                 // Записываю в лог попытку хака
+                if (!$auth_user_id)
+                    $auth_user_id = 'не авторизированный';
                 DB::table('hacking_attempt')->insert([
                     'place' => 'сделать статью опубликованной '.$uri,
                     'object' => 'Номер статьи: '.$id,
