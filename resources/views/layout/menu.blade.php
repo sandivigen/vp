@@ -93,9 +93,6 @@
                                         <li><a href="{{ url('/user', Auth::user()->name) }}/comments"><i class="glyphicon glyphicon-list"></i> Список комментариев</a></li>
                                         <li><a href="{{ url('/user', Auth::user()->name) }}/articles"><i class="glyphicon glyphicon-list"></i> Список статей</a></li>
                                         <li><a href="{{ url('/profile') }}"><i class="glyphicon glyphicon-cog"></i> Редактировать профиль</a></li>
-                                        <li><a href="/articles_admin">Админ: статьи</a></li>
-                                        <li><a href="/comments"><span>Админ: комменты</span></a></li>
-                                        <li><a href="/admin_table_users"><span>Админ: пользователи</span></a></li>
                                         <li><a href="{{ url('/logout') }}">Выйти</a></li>
                                     </ul>
                                 </li>
@@ -109,10 +106,20 @@
                     <div class="collapse navbar-collapse pull-left" id="bs-example-navbar-collapse-1">
                         <ul class="nav navbar-nav">
                             <li><a href="/">Главная</a></li>
-                            <li><a href="/accessories"><span>Аксессуары</span></a></li>
+                            {{--<li><a href="/accessories"><span>Аксессуары</span></a></li>--}}
                             <li><a href="/articles"><span>Статьи</span></a></li>
-                            <li><a href="/articles"><span>Форум</span></a></li>
+                            {{--<li><a href="/articles"><span>Форум</span></a></li>--}}
                             {{--<li><a href="/articles"><span>Новости</span></a></li>--}}
+
+                            @if(!Auth::guest())
+                                @if(Auth::user()->role == 1)
+                                    <li><a href="/admin_table_articles"><i class="glyphicon glyphicon-cog"></i> art</a></li>
+                                    <li><a href="/admin_table_comments"><i class="glyphicon glyphicon-cog"></i> com</a></li>
+                                    <li><a href="/admin_table_users"><i class="glyphicon glyphicon-cog"></i> usr</a></li>
+                                @endif
+                            @endif
+
+
 
                             @if(!Auth::guest())
                                 {{--<li><a href="/my_articles">My articles</a></li>--}}

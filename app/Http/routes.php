@@ -30,13 +30,13 @@
 Route::get('/', 'HomeController@index');
 
 Route::resource('articles', 'ArticlesController');                                  // Main
-Route::resource('articles_admin', 'ArticlesController@articlesAdmin');              // for Admin
+Route::resource('admin_table_articles', 'ArticlesController@adminTableArticles');              // for Admin
 Route::get('articles/category/{category_name}', 'ArticlesController@showCategory'); // category Page
 Route::get('user/{user_name}/articles', 'UserController@profilePageArticles');      // profile Page
 Route::post('delete_article/{id}', 'ArticlesController@delete');                    // UnPublish
 Route::post('un_delete_article/{id}', 'ArticlesController@unDelete');               // Publish
 
-Route::resource('comments', 'CommentsController');
+Route::resource('admin_table_comments', 'CommentsController');
 Route::get('user/{user_name}/comments', 'UserController@profilePageComments');
 Route::post('delete_comment/{id}', 'CommentsController@delete');
 Route::post('un_delete_comment/{id}', 'CommentsController@unDelete');

@@ -30,7 +30,7 @@ class CommentsController extends Controller
 
 
         $heading = 'Все комментарии';
-        return view('comments', array(
+        return view('admin_table_comments', array(
 //            'articles' => $articles,
             'heading' => $heading,
 //            'users' => $users,
@@ -150,7 +150,7 @@ class CommentsController extends Controller
         } else {
             // Записываю в лог попытку хака
             DB::table('hacking_attempt')->insert([
-                'place' => 'удаление комментария из бд '.$uri,
+//                'place' => 'удаление комментария из бд '.$uri,
                 'object' => 'комментарий номер: '.$id,
                 'who' => 'попытался пользователь: '.$auth_user_id,
                 'created_at' => date("Y-m-d H:i:s"),

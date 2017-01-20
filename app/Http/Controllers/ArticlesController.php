@@ -318,14 +318,14 @@ class ArticlesController extends Controller
     /**
      * Admin page with all articles and tools
      */
-    public function articlesAdmin()
+    public function adminTableArticles()
     {
         $articles = Articles::where('user_id', '>', -1)->orderBy('id', 'desc')->paginate(10);
         $articles_count = Articles::all()->count();
         $amount_pages = ceil($articles_count / 10);
         $heading = 'Админ: все статьи';
 
-        return view('articles_admin', array(
+        return view('admin_table_articles', array(
             'articles' => $articles,
             'heading' => $heading,
             'amount_pages' => $amount_pages,
