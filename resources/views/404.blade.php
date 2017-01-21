@@ -1,5 +1,7 @@
 @extends('layout.main')
 
+@section('title', $heading)
+
 @section('content')
     <div class="container">
         <div class="row">

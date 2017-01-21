@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use Illuminate\Support\Facades\Log;
+
 class Handler extends ExceptionHandler
 {
     /**
@@ -46,70 +48,77 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $e)
     {
         // Custom render
-        if ($this->isHttpException($e)) {
-            $statusCode = $e->getStatusCode();
+        if ($this->isHttpException($e)) { // если получаем http ошибку
+
+            $statusCode = $e->getStatusCode(); // получаем номер ошибки
 
 //            dd($e->getMessage());
 
-            if ($e->getMessage() == "show article") {
+            if ($e->getMessage() == "show article")
+            {
                 $data_error = [
-                    'message' => 'Данной статьи не сущечтвует',
+                    'message' => 'Данной статьи не существует',
                     'recommended' => 'show article',
+                    'heading' => 'Статья не найдена',
                 ];
-
-                switch ($statusCode) {
-                    case '404' :
-                        return response()->view('404', $data_error);
-                }
+                Log::alert('Страница статьи не найдена - '.$request->url());
             }
 
-            if ($e->getMessage() == "edit article") {
+            elseif ($e->getMessage() == "edit article")
+            {
                 $data_error = [
                     'message' => 'Страница которую вы хотите редактировать не существует. Проверте адресс ссылки.',
                     'recommended' => 'show 404',
+                    'heading' => 'Статья не найдена',
                 ];
-
-                switch ($statusCode) {
-                    case '404' :
-                        return response()->view('404', $data_error);
-                }
+                Log::alert('Страница редактирования статьи не найдена - '.$request->url());
             }
 
-            if ($e->getMessage() == "show category article") {
+            elseif ($e->getMessage() == "show category article")
+            {
                 $data_error = [
                     'message' => 'Данной категории статей не существует, проверте ваш запрос',
                     'recommended' => 'show 404',
+                    'heading' => 'Категория не найдена',
                 ];
-
-                switch ($statusCode) {
-                    case '404' :
-                        return response()->view('404', $data_error);
-                }
+                Log::alert('Страница категории статьи не найдена - '.$request->url());
             }
 
-            if ($e->getMessage() == "show user profile") {
+            elseif ($e->getMessage() == "show user profile")
+            {
                 $data_error = [
                     'message' => 'Данного пользователя не существует',
                     'recommended' => 'show 404',
+                    'heading' => 'Пользователь не найден',
                 ];
-
-                switch ($statusCode) {
-                    case '404' :
-                        return response()->view('404', $data_error);
-                }
+                Log::alert('Страница профиля пользователя не найдена - '.$request->url());
             }
 
-            if ($e->getMessage() == "404") {
+            elseif ($e->getMessage() == "404")
+            {
                 $data_error = [
                     'message' => 'Запрашиваемой страницы не существует',
                     'recommended' => 'show 404',
+                    'heading' => 'Страница не найдена',
                 ];
-
-                switch ($statusCode) {
-                    case '404' :
-                        return response()->view('404', $data_error);
-                }
+                Log::alert('Страница(пользовательская 404) статьи не найдена - '.$request->url());
             }
+
+            else
+            {
+                $data_error = [
+                    'message' => '404 - страницы не существует',
+                    'recommended' => 'show 404',
+                    'heading' => 'Страница не найдена',
+                ];
+                Log::alert('Страница(стандартная) статьи не найдена - '.$request->url());
+            }
+
+            switch ($statusCode) {
+                case '404' :
+                    return response()->view('404', $data_error);
+            }
+
 //            else {
 //                $data_error = [
 //                    'message' => 'Данной страницы не сущечтвует',

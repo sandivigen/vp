@@ -28,6 +28,8 @@ use File;
 
 use Auth;
 
+use Illuminate\Support\Facades\Log;
+
 // Для редиректа на страницу профиля
 use Illuminate\Support\Facades\Redirect;
 
@@ -292,6 +294,7 @@ class ArticlesController extends Controller
             return back()->with('message', 'Статья удалена из базы данных(с правами администратора)');
         } else {
             // Записываю в лог попытку хака
+            //        Log::alert('Страница не найдена - ');
             DB::table('hacking_attempt')->insert([
 //                'place' => 'удаление статьи из бд '.$uri,
                 'object' => 'статья номер: '.$id,
