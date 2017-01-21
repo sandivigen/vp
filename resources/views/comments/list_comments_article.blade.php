@@ -18,7 +18,7 @@
     @foreach($article_comment as $comment)
 
         @if($comment->type_category == 'article' && $comment->category_item_id == $article->id && $comment->publish)
-            <div class="row">
+            <div class="row" id="comment-id-{{$comment->id}}">
 
                 <div class="col-sm-1 ">
                     <div class="thumbnail">

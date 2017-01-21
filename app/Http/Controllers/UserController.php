@@ -149,7 +149,7 @@ class UserController extends Controller
 
             $heading = 'Комментарии пользователя: ' . $user_name;
             $articles = Articles::all(); // для показа к какой статье принадлежит комментарий
-            $comments = Comments::where('user_id', '=', $user->id)->where('publish', '=', 1)->paginate(3);
+            $comments = Comments::where('user_id', '=', $user->id)->where('publish', '=', 1)->orderBy('id', 'desc')->paginate(3);
             $comments_count = Comments::where('user_id', '=', $user->id)->where('publish', '=', 1)->count();
 
             return view('profile_page_comments', array(

@@ -45,7 +45,7 @@
                                                                 <div class="media-body">
                                                                     <span class="media-meta pull-right">{{ $comment->created_at->format('d M Y') }}</span>
                                                                     <h4 class="title">
-                                                                        <a href="/articles/{{ $comment->category_item_id }}"> {{ $article_list[$comment->category_item_id] }}</a>
+                                                                        <a href="/articles/{{ $comment->category_item_id }}/#comment-id-{{ $comment->id }}"> {{ $article_list[$comment->category_item_id] }}</a>
                                                                         {{--<span class="pull-right pagado">Like (0)</span>--}}
                                                                         @if(!Auth::guest())
                                                                             @if(Auth::user()->id == $comment->user_id)
