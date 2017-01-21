@@ -98,6 +98,18 @@ class Handler extends ExceptionHandler
                         return response()->view('404', $data_error);
                 }
             }
+
+            if ($e->getMessage() == "404") {
+                $data_error = [
+                    'message' => 'Запрашиваемой страницы не существует',
+                    'recommended' => 'show 404',
+                ];
+
+                switch ($statusCode) {
+                    case '404' :
+                        return response()->view('404', $data_error);
+                }
+            }
 //            else {
 //                $data_error = [
 //                    'message' => 'Данной страницы не сущечтвует',

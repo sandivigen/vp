@@ -12,7 +12,7 @@
                             <h3 class="panel-title">Comments list</h3>
                         </div>
                         <div class="col col-xs-6 text-right">
-                            <a class="btn btn-sm btn-primary btn-create" href="/comments/create"><i class="glyphicon glyphicon-plus"></i> Add comment</a>
+                            <a class="btn btn-sm btn-primary btn-create" href="/admin_table_comments/create"><i class="glyphicon glyphicon-plus"></i> Add comment</a>
                         </div>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
                             @foreach($comments as $comment)
                                 <tr>
                                     <td align="center" class="admin-table-btn-block">
-                                        <a href="comments/{{ $comment->id }}/edit" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
+                                        <a href="admin_table_comments/{{ $comment->id }}/edit" class="btn btn-default btn-xs"><em class="fa fa-pencil"></em></a>
 
                                         {!! Form::open(array('action' => ['CommentsController@delete', $comment->id], 'enctype' => 'multipart/form-data')) !!}
                                             <button type="submit" class="btn btn-default btn-xs"><em class="glyphicon glyphicon-eye-close"></em></button>

@@ -49,11 +49,6 @@ Route::get('user/{user_name}', 'UserController@profilePage');
 Route::post('profile', 'UserController@update_avatar');
 
 
-Route::get('404', function()
-{
-    abort(503);
-});
-
 
 
 

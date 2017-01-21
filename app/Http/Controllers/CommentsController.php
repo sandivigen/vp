@@ -18,45 +18,39 @@ use Auth;
 class CommentsController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Страница для администратора со списком всех комментариев
      */
-    public function index() {
-//        $comments = Comments::all()->sortByDesc('id');
+    public function index()
+    {
         $comments = Comments::where('user_id', '>', -1)->orderBy('id', 'desc')->paginate(10);
         $comments_count = Comments::all()->count();
         $amount_pages = ceil($comments_count / 10);
-
-
         $heading = 'Все комментарии';
+
         return view('admin_table_comments', array(
-//            'articles' => $articles,
             'heading' => $heading,
-//            'users' => $users,
             'comments' => $comments,
             'amount_pages' => $amount_pages,
         ));
     }
 
+
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * Тестовый инструмент для быстрого добавления комментария для администратора
      */
-    public function create() {
+    public function create()
+    {
         $heading = 'Добавить комментарий';
         return view('create_comment', array('heading' => $heading));
     }
 
+
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Добавление комментария
      */
-    public function store(Request $request) {
-        // Get Input
+    public function store(Request $request)
+    {
+        // Получаем данные из формы
         $comment_text = $request->input('comment_text');
         $type_category = $request->input('type_category');
         $category_item_id = $request->input('category_item_id');
@@ -77,28 +71,23 @@ class CommentsController extends Controller
         // Run Command
         $this->dispatch($command);
 
-        $redirect_url = $type_category.'s/'.$category_item_id;
+//        $redirect_url = $type_category.'s/'.$category_item_id;
+//        return redirect($redirect_url)
+//            ->with('message', $guest_name.' Ваше сообщение успешно добавленно');
 
-        return redirect($redirect_url)
-            ->with('message', $guest_name.' Ваше сообщение успешно добавленно');
+        return back()->with('message', 'Ваше сообщение успешно добавленно');
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Просмотр конкретного комментария
      */
     public function show($id)
     {
-        //
+        abort(404, '404');
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Тестовый инструмент для быстрого редактирования любого комментария для администратора
      */
     public function edit($id) {
         $comment = Comments::find($id);
@@ -107,11 +96,7 @@ class CommentsController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Обработка формы редактирования комментария
      */
     public function update(Request $request, $id) {
         // Get Input
@@ -123,28 +108,26 @@ class CommentsController extends Controller
         $publish = $request->input('publish');
         $like = $request->input('like');
 
-
         // Create Command
         $command = new UpdateCommentCommand($id, $comment_text, $user_id, $guest_name, $type_category, $category_item_id, $publish, $like);
         // Run Command
         $this->dispatch($command);
 
-        return \Redirect::route('comments.index')
-            ->with('message', 'Comment edited');
+        return \Redirect::route('admin_table_comments.index')
+            ->with('message', 'Комментарий обновлен');
     }
 
+
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * Удаление комментария из базы данных
      */
-    public function destroy($id) {
+    public function destroy($id)
+    {
         $command = new DestroyCommentCommand($id);
 
         // Admin check
-        $auth_user_id = Auth::user()->id;
-        if ($auth_user_id == 1) {
+        $auth_user_role = Auth::user()->role;
+        if ($auth_user_role == 1) {
             $this->dispatch($command);
             return back()->with('message', 'Комментарий удален из базы данных(с правами администратора)');
         } else {
@@ -160,10 +143,12 @@ class CommentsController extends Controller
         }
     }
 
+
     /**
      * Сделать комментарий неопубликованным
      */
-    public function delete(Request $request, $id) {
+    public function delete(Request $request, $id)
+    {
         $comment = Comments::find($id);
         $comment->publish = 0;
 
@@ -195,10 +180,12 @@ class CommentsController extends Controller
         }
     }
 
+
     /**
-     * please write description here
+     * Сделать комментарий опубликованным
      */
-    public function unDelete(Request $request, $id) {
+    public function unDelete(Request $request, $id)
+    {
         $comment = Comments::find($id);
         $comment->publish = 1;
 
@@ -230,10 +217,12 @@ class CommentsController extends Controller
         }
     }
 
+
     /**
-     * Редактирование коммента в профиле админа через модальное окно
+     * Редактирование коммента в профиле пользователя, через модальное окно
      */
-    public function updatePopup(Request $request, $id) {
+    public function updatePopup(Request $request, $id)
+    {
         // Get Input
         $comment_text = $request->input('comment_text');
 
@@ -273,6 +262,5 @@ class CommentsController extends Controller
 
             return back()->with('message', 'У вас нет прав для редактирования этого комментария');
         }
-
     }
 }
