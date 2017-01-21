@@ -164,8 +164,6 @@ class ArticlesController extends Controller
     {
         $article = Articles::find($id);
 
-        $article = Articles::find($id);
-
         if (isset($article)) {
             $heading = 'Редактировать статью';
 

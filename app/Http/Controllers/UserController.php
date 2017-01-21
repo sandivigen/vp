@@ -19,7 +19,7 @@ use Image;
 class UserController extends Controller
 {
     /**
-     * description
+     * Стараница с редактирование личных данных
      */
     public function profile()
     {
@@ -28,7 +28,7 @@ class UserController extends Controller
     }
 
     /**
-     * description
+     * Изменения в профиле личных данных
      */
     public function update_avatar(Request $request)
     {
@@ -80,144 +80,21 @@ class UserController extends Controller
         return view('profile', array('user' => Auth::user(), 'heading' => $heading));
     }
 
-    /**
-     * Страница содержащая список всех статей данного пользователя
-     */
-    public function profilePageArticles($user_name)
-    {
-        $users = User::all();
-
-        // get user id
-        foreach ($users as $user) {
-            if ($user->name == $user_name)
-                $user_id = $user->id;
-        }
-
-        $articles = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->orderBy('id', 'desc')->paginate(2);
-//        $articles = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->count();
-
-        // Check if the user exists(существует)
-        $user_exists = 0;
-        foreach ($users as $user) {
-            if ($user->name == $user_name)
-                $user_exists = 1;
-        }
-
-        // счетчик для пагинации
-        $articles_count = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->count();
-        $amount_pages = ceil($articles_count / 2);
-            
-        if ($user_exists == 1) {
-
-            // получаем ид юзера из его имени
-            foreach ($users as $user) {
-                if ($user->name == $user_name)
-                    $user_id = $user->id;
-            }
-            $user = User::find($user_id);
-
-            $heading = 'Все статьи пользователя: ' . $user_name;
-
-            return view('profile_page_articles', array(
-                'heading' => $heading,
-                'articles' => $articles,
-                'user_exists' => 1,
-                'user' => $user,
-                'amount_pages' => $amount_pages,
-                'articles_count' => $articles_count,
-            ));
-        } else {
-            return view('profile_page_articles', array(
-                'heading' => 'Пользователь ' . $user_name . ' не существует',
-                'user_exists' => 0,
-            ));
-        }
-    }
-
-    /**
-     * Страница содержащая список всех комментов данного пользователя
-     */
-    public function profilePageComments($user_name)
-    {
-        $users = User::all();
-
-        // get user id
-        foreach ($users as $user) {
-            if ($user->name == $user_name)
-                $user_id = $user->id;
-        }
-
-        $comments = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->paginate(3);
-        $comments_count = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->count();
-
-        $articles = Articles::all();
-        $users = User::all();
-
-        // Check if the user exists(существует)
-        $user_exists = 0;
-        foreach ($users as $user) {
-            if ($user->name == $user_name)
-                $user_exists = 1;
-        }
-
-        if ($user_exists == 1) {
-
-            // получаем ид юзера из его имени
-            foreach ($users as $user) {
-                if ($user->name == $user_name)
-                    $user_id = $user->id;
-            }
-            $user = User::find($user_id);
-
-            $heading = 'Профиль пользователя: ' . $user_name;
-
-            return view('profile_page_comments', array(
-                'heading' => $heading,
-                'articles' => $articles,
-                'comments' => $comments,
-                'user_exists' => 1,
-                'user' => $user,
-                'comments_count' => $comments_count,
-
-            ));
-        } else {
-
-            return view('profile_page_comments', array(
-                'heading' => 'Пользователь ' . $user_name . ' не существует',
-                'user_exists' => 0,
-            ));
-        }
-    }
 
     /**
      * страница для просмотра разными пользователями c данными, комментами и статьями
      */
     public function profilePage($user_name)
     {
-        $users = User::all();
+        $user = User::where('name', '=', $user_name)->first(); // получаем объект пользователя
 
-        // get user id
-        foreach ($users as $user) {
-            if ($user->name == $user_name)
-                $user_id = $user->id;
-        }
+        if (isset($user)) {
 
-        $user_comments = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->get()->sortByDesc('id')->take(10);
-        $user_articles = Articles::where('user_id', '=', $user_id)->where('publish', '=', 1)->get()->sortByDesc('id')->take(3);
-        $articles = Articles::all(); // выбмраем все статьи для определения заголовка к какой статье пренадлежит комментарий
-        $articles_count = Articles::where('user_id', '=', $user_id)->count(); // получаем сумму всех статей пользователя
-        $comments_count = Comments::where('user_id', '=', $user_id)->where('publish', '=', 1)->count(); // получаем сумму всех сообщений пользователя, из них выбираем опубликванные
-
-        // Check if the user exists(существует)
-        $user_exists = 0;
-        foreach ($users as $user) {
-            if ($user->name == $user_name)
-                $user_exists = 1;
-        }
-
-        if ($user_exists == 1) {
-
-            $user = User::find($user_id);
+            $user_comments = Comments::where('user_id', '=', $user->id)->where('publish', '=', 1)->get()->sortByDesc('id')->take(10);
+            $user_articles = Articles::where('user_id', '=', $user->id)->where('publish', '=', 1)->get()->sortByDesc('id')->take(3);
+            $articles = Articles::all(); // выбмраем все статьи для определения заголовка к какой статье пренадлежит комментарий
+            $articles_count = Articles::where('user_id', '=', $user->id)->where('publish', '=', 1)->count(); // получаем сумму всех статей пользователя
+            $comments_count = Comments::where('user_id', '=', $user->id)->where('publish', '=', 1)->count(); // получаем сумму всех сообщений пользователя, из них выбираем опубликванные
 
             $heading = 'Профиль пользователя: ' . $user_name;
 
@@ -225,20 +102,67 @@ class UserController extends Controller
                 'heading' => $heading,
                 'user_articles' => $user_articles,
                 'user_comments' => $user_comments,
-                'user_exists' => 1,
                 'articles_count' => $articles_count,
                 'comments_count' => $comments_count,
                 'articles' => $articles,
                 'user' => $user
             ));
-        } else {
+        }
+        abort(404, 'show user profile');
+    }
 
-            return view('profile_page', array(
-                'heading' => 'Пользователь ' . $user_name . ' не существует',
-                'user_exists' => 0,
+
+    /**
+     * Страница содержащая список всех статей данного пользователя
+     */
+    public function profilePageArticles($user_name)
+    {
+        $user = User::where('name', '=', $user_name)->first(); // получаем объект пользователя
+
+        if (isset($user)) {
+
+            $articles = Articles::where('user_id', '=', $user->id)->where('publish', '=', 1)->orderBy('id', 'desc')->paginate(2);
+            $articles_count = Articles::where('user_id', '=', $user->id)->where('publish', '=', 1)->count(); // счетчик для пагинации
+            $amount_pages = ceil($articles_count / 2); // округения для суммы страниц пагинации
+            $heading = 'Все статьи пользователя: ' . $user_name;
+
+            return view('profile_page_articles', array(
+                'heading' => $heading,
+                'articles' => $articles,
+                'user' => $user,
+                'amount_pages' => $amount_pages,
+                'articles_count' => $articles_count,
             ));
         }
+        abort(404, 'show user profile');
     }
+
+
+    /**
+     * Страница содержащая список всех комментов данного пользователя
+     */
+    public function profilePageComments($user_name)
+    {
+        $user = User::where('name', '=', $user_name)->first(); // получаем объект пользователя
+
+        if (isset($user)) {
+
+            $heading = 'Комментарии пользователя: ' . $user_name;
+            $articles = Articles::all(); // для показа к какой статье принадлежит комментарий
+            $comments = Comments::where('user_id', '=', $user->id)->where('publish', '=', 1)->paginate(3);
+            $comments_count = Comments::where('user_id', '=', $user->id)->where('publish', '=', 1)->count();
+
+            return view('profile_page_comments', array(
+                'user' => $user,
+                'heading' => $heading,
+                'articles' => $articles,
+                'comments' => $comments,
+                'comments_count' => $comments_count,
+            ));
+        }
+        abort(404, 'show user profile');
+    }
+
 
     /**
      * Администраторская страница с перечнем всех пользователей
@@ -247,15 +171,15 @@ class UserController extends Controller
     {
         $users = User::all();
 
-            return view('admin_table_users', array(
-                'heading' => 'Админ таблица пользователей',
-                'users' => $users,
-//                'user_exists' => 0,
-            ));
-//        }
+        return view('admin_table_users', array(
+            'heading' => 'Админ таблица пользователей',
+            'users' => $users,
+        ));
     }
+
+
     /**
-     * Администраторская страница с перечнем всех пользователей
+     * Администраторская страница с перечнем всех пользователей, защита от обновления статусов
      */
     public function adminTableUsersUpdate(Request $request)
     {

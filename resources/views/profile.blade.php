@@ -13,7 +13,7 @@
     @if (Auth::guest())
         <p>Вам необходимо авторизироваться, чтобы отредактировать профиль</p>
     @else
-        @if(Auth::user()->id != $user->id)
+        @if(Auth::user()->id == $user->id)
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
