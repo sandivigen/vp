@@ -118,15 +118,6 @@ class Handler extends ExceptionHandler
                 case '404' :
                     return response()->view('404', $data_error);
             }
-
-//            else {
-//                $data_error = [
-//                    'message' => 'Данной страницы не сущечтвует',
-//                    'recommended' => 'show 404',
-//                ];
-//            }
-
-
         }
 
         return parent::render($request, $e);
