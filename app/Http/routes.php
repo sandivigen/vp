@@ -48,7 +48,10 @@ Route::get('profile', 'UserController@profile');
 Route::get('user/{user_name}', 'UserController@profilePage');
 Route::post('profile', 'UserController@update_avatar');
 
-
+Route::post('/edit', [
+    'uses' => 'LikesController@ajaxLikes',
+    'as' => 'edit'
+]);
 
 
 

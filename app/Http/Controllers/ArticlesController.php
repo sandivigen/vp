@@ -15,8 +15,8 @@ use App\Commands\DestroyArticleCommand;
 
 use App\Articles;
 use App\User;
-//use App\ArticlesComments;
 use App\Comments;
+use App\Likes;
 
 //use Carbon\Carbon;
 
@@ -143,6 +143,21 @@ class ArticlesController extends Controller
 
         if (isset($article)) {
 //        $article_comment = ArticlesComments::where('article_id', '=', $id); хотел более правильно выборку сделать
+
+
+            if (Auth::guest()){
+                $user_auth_id = 0;
+                $likes_active = 0;
+            } else {
+                $user_auth_id = Auth::user()->id;
+                $like_user = Likes::where('post_id', '=', $id*1)->where('user_id', '=', $user_auth_id)->where('category_post_id', '=', 1)->get()->toArray();
+                $likes_active = ($like_user[0]['count']);
+            }
+
+            $likes_count = Likes::where('post_id', '=', $id)->where('category_post_id', '=', 1)->where('count', '=', 1)->count();
+
+
+
             $article_comment = Comments::all()->sortByDesc('id');
             $users = User::all();
             $heading = 'Controller - Show article';
@@ -151,7 +166,7 @@ class ArticlesController extends Controller
             $articles_count = Articles::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
             $comments_count = Comments::where('user_id', '=', $article->user_id)->where('publish', '=', 1)->count();
 
-            return view('show_article', compact('article', 'article_comment', 'users', 'heading', 'articles_count', 'comments_count'));
+            return view('show_article', compact('article', 'article_comment', 'users', 'heading', 'articles_count', 'comments_count', 'likes_count', 'likes_active'));
         }
         abort(404, 'show article');
     }
